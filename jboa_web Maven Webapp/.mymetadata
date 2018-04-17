@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="jboa_web Maven Webapp"
+  id="myeclipse.1482115323150"
+  context-root="/jboa_web"
+  j2ee-spec="6.0"
+  archive="jboa_web Maven Webapp.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

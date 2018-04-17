@@ -1,0 +1,23 @@
+1:on project jboa_web: Failure: NullPointerException -> [Help 1]
+解决：通常这种情况 是学生把	WEB.XML 文件拖出了web.info文件夹
+
+2:遇到异常 NoClassDefFoundError(注意这可不是 ClassNotFoundException， 
+NoClassDefFoundError相对不好解决 ) 
+NoClassDefFoundError是从JVM 中报出的错误   通常是编译时通过了  在运行时发生了错误
+解决：如果项目JAR包存在对应的CLASS  
+可以尝试 用 import org.springfarmework.context.i18n.?
+这种方式进行联想 如果联想不出来 则重新下载该JAR包
+
+3.在JBOA_WEB中发现JSP或JAVA 文件怎么弄都无法更新 
+解决：这时需要删除target文件夹 或
+（maven clean）  再删除web-info 下面的class文件夹  
+再强制修改更新一下项目(update project config )  再编译（maven compile）一下 
+最后再clean一下(project clean)
+
+
+4.更改了js文件  但是前台没有更新 需要清理浏览器缓存
+
+5.SESSION 线程无法绑定的异常 要确认 @Transactional 没有导错包
+Spring MVC 与 hibernate 3.2.7 整合  在使用getSessionFactory().
+					getCurrentSession() 需要线程绑定
+如果Spring MVC 与 hibernate 3.2整合则不需要 这是因为版本的问题

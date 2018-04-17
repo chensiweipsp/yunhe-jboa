@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx 
+    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/cache  
+    http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+    http://www.springframework.org/schema/osgi-compendium 
+    http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
+    http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd"
+	xmlns:p="http://www.springframework.org/schema/p">
+<!-- 	<bean id="realm" class="realm.EmpRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property>
+	</bean>
+ -->
+	<!-- 凭证匹配器 -->
+	<bean id="credentialsMatcher"
+		class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+		<property name="hashAlgorithmName" value="md5"></property>
+		<property name="hashIterations" value="1"></property>
+	</bean>
+	<!-- 配置安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- ref对应我们写的realm MyShiro -->
+<!-- 		<property name="realm" ref="realm" />
+ -->		<!-- 使用下面配置的缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="rememberMeManager.cookie.maxAge" value="2592000"></property>
+
+	</bean>
+
+	<bean id="systemLogoutFilter" class="filter.SystemLogoutFilter"></bean>
+
+
+	<!--SHIRO的缓存管理 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+
+	<!-- 配置shiro的过滤器工厂类，id- shiroFilter要和我们在web.xml中配置的过滤器一致 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 调用我们配置的权限管理器 -->
+		<property name="securityManager" ref="securityManager" />
+		<property name="filters">
+			<map>
+				<!--退出过滤器 -->
+				<entry key="logout" value-ref="systemLogoutFilter" />
+
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/emp/logout = logout
+			</value>
+		</property>
+
+	</bean>
+	<!-- <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" 
+		/> -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+</beans>
