@@ -20,12 +20,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.portlet.ModelAndView;
 
 
 import biz.IWorkflowService;
+import entity.SysEmployee;
 import form.WorkflowBean;
 
 
@@ -87,12 +89,21 @@ public class WorkflowController  {
 	public String startProcess(){
 		return "listTask";
 	}
-
-	public String listTask(){
-		//		String name = SessionContext.get().getName();
-		//		List<Task> list = workflowService.findTaskListByName(name); 
-		//		ValueContext.putValueContext("list", list);
-		return "task";
+	
+	
+	@RequestMapping(params="method=getlisttask")
+	public @ResponseBody List<Task> listTask(ModelMap modelMap,HttpServletRequest httpServletRequest){
+		SysEmployee sysEmployee =	(SysEmployee) httpServletRequest.getSession().getAttribute("sysEmploye");
+		String name = sysEmployee.getName();
+		List<Task> list = workflowService.findTaskListByName(name); 
+		for (Task task : list) {
+			System.err.println(task.getId());
+			System.err.println(task.getName());
+			System.err.println(task.getCreateTime());
+			System.err.println(task.getOwner());
+			System.err.println(task.getAssignee());
+		} 
+		return list;
 	}
 
 	public String viewTaskForm(){
@@ -128,8 +139,6 @@ public class WorkflowController  {
 		//		ValueContext.putValueContext("acs", map);
 		return "image";
 	}
-
-
 
 
 

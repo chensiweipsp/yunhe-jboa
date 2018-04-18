@@ -63,7 +63,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 	}
 
 	@Override
-	public int SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher) {
+	public BizClaimVoucher SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher) {
 		Session session=null;
 		try {
 			session= getHibernateTemplate().getSessionFactory().getCurrentSession();
@@ -150,8 +150,6 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 				BizClaimVoucher.setNextDealSn(nextdeal);
 				BizClaimVoucher.setStatus("新创建");
 				session.save(BizClaimVoucher);
-				
-				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,7 +158,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 			throw new RuntimeException();
 
 		}
-		return 0;
+		return BizClaimVoucher;
 	}
 
 	public int deleteClaimVouchers(int id) {

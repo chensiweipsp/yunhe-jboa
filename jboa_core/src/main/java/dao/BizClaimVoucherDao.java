@@ -27,7 +27,7 @@ public interface BizClaimVoucherDao {
 
 	 
 	 
-	int SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher);
+	 BizClaimVoucher SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher);
 
 	int deleteClaimVouchers(int id);
 	

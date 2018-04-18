@@ -4,29 +4,27 @@
     <startEvent id="startevent1" name="Start"></startEvent>
     <userTask id="usertask1" name="提交申请" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action"></userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" activiti:async="true" default="普通员工申请"></exclusiveGateway>
+    <exclusiveGateway id="exclusivegateway1" name="exclusivegateway1" activiti:async="true" default="普通员工申请"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"></sequenceFlow>
-    <userTask id="usertask3" name="部门经理审批" activiti:formKey="workflowAction_audit.action">
+    <userTask id="usertask3" name="部门经理审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action">
       <extensionElements>
         <activiti:taskListener event="create" class="utils.ManagerTaskHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="普通员工申请" name="普通员工申请" sourceRef="exclusivegateway1" targetRef="usertask3">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${role=='staff'}]]></conditionExpression>
-    </sequenceFlow>
-    <userTask id="usertask4" name="财务审批" activiti:formKey="workflowAction_audit.action">
+    <sequenceFlow id="普通员工申请" name="普通员工申请" sourceRef="exclusivegateway1" targetRef="usertask3"></sequenceFlow>
+    <userTask id="usertask4" name="财务审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action">
       <extensionElements>
         <activiti:taskListener event="create" class="utils.ManagerTaskHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow5" sourceRef="usertask3" targetRef="usertask4"></sequenceFlow>
-    <userTask id="usertask5" name="总经理审批" activiti:formKey="workflowAction_audit.action">
+    <userTask id="usertask5" name="总经理审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action">
       <extensionElements>
         <activiti:taskListener event="create" class="utils.ManagerTaskHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <endEvent id="endevent1" name="End"></endEvent>
-    <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway" default="财务审核"></exclusiveGateway>
+    <exclusiveGateway id="exclusivegateway3" name="exclusivegateway3" activiti:async="true" default="财务审核"></exclusiveGateway>
     <sequenceFlow id="flow13" sourceRef="usertask4" targetRef="exclusivegateway3"></sequenceFlow>
     <sequenceFlow id="财务审核" name="财务审核" sourceRef="exclusivegateway3" targetRef="usertask5"></sequenceFlow>
     <sequenceFlow id="总经理到财务的申请" name="总经理到财务的申请" sourceRef="exclusivegateway3" targetRef="endevent1">
@@ -35,18 +33,17 @@
     <sequenceFlow id="flow17" name="财务经理回拒" sourceRef="usertask4" targetRef="usertask1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${outcome=='驳回'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow18" name="总经理回拒" sourceRef="usertask5" targetRef="usertask1">
+    <sequenceFlow id="总经理回拒" name="总经理回拒" sourceRef="usertask5" targetRef="usertask1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${outcome=='驳回'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow19" name="部门经理回拒" sourceRef="usertask3" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="部门经理回拒" name="部门经理回拒" sourceRef="usertask3" targetRef="usertask1"></sequenceFlow>
     <sequenceFlow id="财务申请" name="财务申请" sourceRef="exclusivegateway1" targetRef="usertask5">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${role=='cashier'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="总经理审核" name="总经理审核" sourceRef="usertask5" targetRef="endevent1"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
-    <sequenceFlow id="flow20" sourceRef="usertask1" targetRef="exclusivegateway4"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway6" name="Exclusive Gateway"></exclusiveGateway>
-    <sequenceFlow id="flow22" sourceRef="exclusivegateway6" targetRef="usertask4"></sequenceFlow>
+    <sequenceFlow id="部门经理或总经理提交" name="部门经理或总经理提交" sourceRef="exclusivegateway1" targetRef="usertask4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${role=='generalmanager'||role=='manager'}]]></conditionExpression>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_BizClaimVoucher">
     <bpmndi:BPMNPlane bpmnElement="BizClaimVoucher" id="BPMNPlane_BizClaimVoucher">
@@ -73,12 +70,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
         <omgdc:Bounds height="40.0" width="40.0" x="673.0" y="219.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
-        <omgdc:Bounds height="40.0" width="40.0" x="260.0" y="217.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway6" id="BPMNShape_exclusivegateway6">
-        <omgdc:Bounds height="41.0" width="161.0" x="229.0" y="37.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="85.0" y="236.0"></omgdi:waypoint>
@@ -109,7 +100,7 @@
         <omgdi:waypoint x="792.0" y="170.0"></omgdi:waypoint>
         <omgdi:waypoint x="792.0" y="210.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="700.0" y="171.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="48.0" x="700.0" y="171.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="总经理到财务的申请" id="BPMNEdge_总经理到财务的申请">
@@ -130,22 +121,22 @@
           <omgdc:Bounds height="14.0" width="72.0" x="170.0" y="388.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+      <bpmndi:BPMNEdge bpmnElement="总经理回拒" id="BPMNEdge_总经理回拒">
         <omgdi:waypoint x="792.0" y="265.0"></omgdi:waypoint>
         <omgdi:waypoint x="792.0" y="436.0"></omgdi:waypoint>
         <omgdi:waypoint x="162.0" y="436.0"></omgdi:waypoint>
         <omgdi:waypoint x="162.0" y="264.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="60.0" x="170.0" y="419.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="100.0" x="170.0" y="419.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+      <bpmndi:BPMNEdge bpmnElement="部门经理回拒" id="BPMNEdge_部门经理回拒">
         <omgdi:waypoint x="472.0" y="264.0"></omgdi:waypoint>
         <omgdi:waypoint x="472.0" y="382.0"></omgdi:waypoint>
         <omgdi:waypoint x="162.0" y="382.0"></omgdi:waypoint>
         <omgdi:waypoint x="162.0" y="264.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="72.0" x="167.0" y="359.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="100.0" x="167.0" y="359.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="财务申请" id="BPMNEdge_财务申请">
@@ -157,7 +148,7 @@
         <omgdi:waypoint x="874.0" y="239.0"></omgdi:waypoint>
         <omgdi:waypoint x="845.0" y="237.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="291.0" y="459.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="48.0" x="291.0" y="459.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="总经理审核" id="BPMNEdge_总经理审核">
@@ -166,17 +157,17 @@
         <omgdi:waypoint x="967.0" y="146.0"></omgdi:waypoint>
         <omgdi:waypoint x="967.0" y="267.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="900.0" y="151.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="60.0" x="900.0" y="151.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
-        <omgdi:waypoint x="215.0" y="236.0"></omgdi:waypoint>
-        <omgdi:waypoint x="260.0" y="237.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
-        <omgdi:waypoint x="390.0" y="57.0"></omgdi:waypoint>
-        <omgdi:waypoint x="592.0" y="57.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="部门经理或总经理提交" id="BPMNEdge_部门经理或总经理提交">
+        <omgdi:waypoint x="280.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="141.0"></omgdi:waypoint>
+        <omgdi:waypoint x="592.0" y="141.0"></omgdi:waypoint>
         <omgdi:waypoint x="592.0" y="209.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="490.0" y="143.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

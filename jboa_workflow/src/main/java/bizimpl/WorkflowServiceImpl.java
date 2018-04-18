@@ -23,6 +23,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import form.WorkflowBean;
@@ -42,7 +43,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	@Resource(name="historyService")
 	private HistoryService historyService;
 
-	
 	
 	/**部署流程定义*/
 	public void saveNewDeploye(File file, String filename) {
@@ -90,12 +90,31 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	
 	/**更新请假状态，启动流程实例，让启动的流程实例关联业务*/
 	
-	public void saveStartProcess(String ename,String key,int id) {
+	public void saveStartProcess(String ename,String key,String id) {
 		Map<String, Object> variables = new HashMap<String,Object>();
 		variables.put("inputUser", ename);//表示惟一用户
+		
 		String objId = key+"."+id;
+		
 		variables.put("objId", objId);
 		
+		if(SecurityUtils.getSubject().hasRole("staff"))
+		{
+			variables.put("role", "staff");
+		}
+		else if(SecurityUtils.getSubject().hasRole("manager"))
+		{
+			variables.put("role", "manager");
+		}
+		else if(SecurityUtils.getSubject().hasRole("generalmanager"))
+		{
+			variables.put("role", "generalmanager");
+		}
+		else if(SecurityUtils.getSubject().hasRole("cashier"))
+		{
+			variables.put("role", "cashier");
+		}
+	
 		runtimeService.startProcessInstanceByKey(key,objId,variables);
 	}
 	

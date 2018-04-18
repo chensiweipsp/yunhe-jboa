@@ -19,7 +19,6 @@
 
 
 
-
 	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />

@@ -22,6 +22,7 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -34,7 +35,7 @@ import entity.SysPermission;
 import entity.SysRole;
 import biz.EmpBIZ;
 
-@Service("realm")
+@Component("realm")
 public class EmpRealm extends AuthorizingRealm {  
 	@Resource(name="empDAO")
 	SysEmployeeDAO employeeDAO;

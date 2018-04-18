@@ -29,7 +29,7 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 	@Autowired
 	DeptDAO deptDAO;
 	@Override
-	public int SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher
+	public BizClaimVoucher SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher
 			) {
 		// TODO Auto-generated method stub
 		return bizClaimVoucherDao.SaveOrUpdateClaimVouchers(BizClaimVoucher);

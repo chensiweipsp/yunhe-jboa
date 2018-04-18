@@ -20,7 +20,7 @@ public interface BizClaimVoucherBiz {
 
 /*	 List<BizClaimVoucher> getClaimVouchers(String sql,int page,int rows,SysEmployee sEmployee,String roles,String permissions,Boolean isLookThrough);
 */
-	int SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher);
+	 BizClaimVoucher SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher);
 
 	int deleteClaimVouchers(int id);
 	

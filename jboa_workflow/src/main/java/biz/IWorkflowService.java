@@ -26,12 +26,11 @@ public interface IWorkflowService {
 
 	void deleteProcessDefinitionByDeploymentId(String deploymentId);
 
-	void saveStartProcess(String ename,String key,int id);
+	void saveStartProcess(String ename,String key,String id);
 
 	List<Task> findTaskListByName(String name);
 
 	String findTaskFormKeyByTaskId(String taskId);
-
 
 	List<String> findOutComeListByTaskId(String taskId);
 
