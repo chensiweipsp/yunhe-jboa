@@ -34,7 +34,7 @@ public class SimpleSender {
 		
 		Object object =null;
 		
-		System.err.println("正在发送邮箱。。。。");
+		System.err.println("正在发送邮箱!!。。。。");
 		
 		try {
 			
