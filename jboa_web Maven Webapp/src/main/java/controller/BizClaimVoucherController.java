@@ -80,7 +80,23 @@ public class BizClaimVoucherController {
 		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchers(createSn, nextDeal, "", page, rows, sysEmployee,  true));
 		return jsonData;
 	}
-
+	@RequestMapping(params="method=checkclaimvoucherShowByTask")
+	public @ResponseBody JsonData checkclaimvoucherShowByTask(HttpServletRequest request ,HttpServletResponse response)  {
+		List<Integer> strings = (List<Integer>) request.getAttribute("taskids");
+		String previous = request.getParameter("previous");
+		int page=Integer.parseInt( request.getParameter("page"));
+		int rows=Integer.parseInt(request.getParameter("rows"));
+		if ("true".equals(previous)) {
+			page = page - 1; 
+		} 
+		
+		
+		JsonData jsonData = new JsonData();
+		jsonData.setTotal(bizClaimVoucherBiz.getClaimVouchersCountByTask(strings, page, rows));
+		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchersByTask(strings, page, rows));
+		
+		return jsonData;
+	}
 
 	@RequestMapping(params="method=gitStatus",method=RequestMethod.POST)
 	public String gitStatus(HttpServletRequest request,HttpServletResponse response,ModelMap map)
@@ -344,4 +360,8 @@ public class BizClaimVoucherController {
 		 departmentForJson.setName(department.getName());
 		 return departmentForJson;
 	}
+	
+	
+	
+	
 }

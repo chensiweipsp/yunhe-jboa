@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -25,15 +26,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.portlet.ModelAndView;
 
-
+import biz.BizClaimVoucherBiz;
 import biz.IWorkflowService;
 import entity.SysEmployee;
 import form.WorkflowBean;
+import util.JsonData;
 
 
 @Controller
 @RequestMapping("workflowAction.do")
 public class WorkflowController  {
+	@Autowired
+	BizClaimVoucherBiz bizClaimVoucherBiz;
 
 	@Resource(name="workflowBean")
 	private WorkflowBean workflowBean ;
@@ -89,9 +93,9 @@ public class WorkflowController  {
 	public String startProcess(){
 		return "listTask";
 	}
-	
-	
-	@RequestMapping(params="method=getlisttask")
+
+
+	/*	@RequestMapping(params="method=getlisttask")
 	public @ResponseBody List<Task> listTask(ModelMap modelMap,HttpServletRequest httpServletRequest){
 		SysEmployee sysEmployee =	(SysEmployee) httpServletRequest.getSession().getAttribute("sysEmploye");
 		String name = sysEmployee.getName();
@@ -103,7 +107,34 @@ public class WorkflowController  {
 			System.err.println(task.getOwner());
 			System.err.println(task.getAssignee());
 		} 
+
+
 		return list;
+	}*/
+
+	@RequestMapping(params="method=getlisttask")
+	public  String execute02(HttpServletRequest request ,HttpServletResponse response)  {
+
+
+		SysEmployee employee =	(SysEmployee) request.getSession().getAttribute("sysEmploye");
+		String name = employee.getName();
+		List<Task> list = workflowService.findTaskListByName(name); 
+		for (Task task : list) {
+			System.err.println(task.getId());
+			System.err.println(task.getName());
+			System.err.println(task.getCreateTime());
+			System.err.println(task.getOwner());
+			System.err.println(task.getAssignee());
+		} 
+
+		List<Integer> strings = workflowService.findLeaveBillByTaskId(list);
+
+		
+		request.setAttribute("taskids", strings);
+		
+		
+		
+		return "forward:ClaimVoucher.do?method=checkclaimvoucherShowByTask";
 	}
 
 	public String viewTaskForm(){

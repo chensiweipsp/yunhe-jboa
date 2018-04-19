@@ -14,7 +14,7 @@ $(function() {
 				// 窗口是否可以收缩
 				collapsible : false,
 				// 请求数据的url
-				url : 'ClaimVoucher.do?method=CheckClaimVouchershow',
+				url : 'workflowAction.do?method=getlisttask',
 				// 行阴影，但目前看没有效果
 				striped : true,
 				//自适应列宽
