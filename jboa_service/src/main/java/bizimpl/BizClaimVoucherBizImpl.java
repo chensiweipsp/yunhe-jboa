@@ -185,4 +185,14 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		}
 		return bizClaimVoucherDao.getClaimVouchers(page, rows, stringBuilder.toString(), isLookThrough);
 	}
+	@Override
+	public List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
+		// TODO Auto-generated method stub
+		return bizClaimVoucherDao.getClaimVouchersByTask(bizclaimvoucherids, page, rows);
+	}
+	@Override
+	public int getClaimVouchersCountByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
+		// TODO Auto-generated method stub
+		return bizClaimVoucherDao.getClaimVouchersCountByTask(bizclaimvoucherids, page, rows);
+	}
 }

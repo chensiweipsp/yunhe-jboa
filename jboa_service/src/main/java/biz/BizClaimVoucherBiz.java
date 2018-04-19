@@ -9,7 +9,6 @@ import entity.SysEmployee;
 
 
 public interface BizClaimVoucherBiz {
-
 	BizClaimVoucher findByID(String id);
 
 /*	int getClaimVoucherCount(SysEmployee sEmploye,String roles,String permissions,Boolean isLookThrough);
@@ -28,4 +27,7 @@ public interface BizClaimVoucherBiz {
 	
 	SysDepartment getnextDealSn(SysDepartment dept,String role  );
 	
+	List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids,int page,int rows);
+	int getClaimVouchersCountByTask(List<Integer> bizclaimvoucherids,int page,int rows);
+
 }
