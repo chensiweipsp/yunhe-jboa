@@ -23,8 +23,6 @@
 	</bean>
 
 
-
-
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="configLocation" value="classpath:hibernate.cfg.xml">
@@ -36,5 +34,6 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
+
 
 </beans>

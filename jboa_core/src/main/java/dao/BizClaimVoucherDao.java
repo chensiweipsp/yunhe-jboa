@@ -36,5 +36,7 @@ public interface BizClaimVoucherDao {
 	int notgo(String pass,long id,String comm,int sn,int cn);
 
 	Set<SysDepartment> getnextDealSn(int cn );
+	List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids,int page,int rows);
+	int getClaimVouchersCountByTask(List<Integer> bizclaimvoucherids,int page,int rows);
 
 }

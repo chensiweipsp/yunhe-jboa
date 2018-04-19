@@ -28,6 +28,7 @@ import entity.BizClaimVouyearStatistics;
 import entity.SysDepartment;
 import entity.SysEmployee;
 import entity.SysRole;
+import util.Page;
 @Transactional
 @Repository("bizClaimVoucherDao")
 public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizClaimVoucherDao
@@ -119,7 +120,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 				SysEmployee create=	(SysEmployee) session.get(SysEmployee.class, createSn);
 				SysEmployee nextdeal=	(SysEmployee) session.get(SysEmployee.class, nextdealsn);;
 
-				
+
 				String rolesn = null;
 
 				for(SysRole role2:nextdeal.getRoles())
@@ -133,7 +134,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 				{
 					rolecn=role2.getRolename();
 				}
-				
+
 				if(rolesn.equals("cashier"))
 				{
 					BizClaimVoucher.setSchedule(2);
@@ -425,6 +426,69 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 		}
 
 		return bizClaimVouchers;
+	}
+
+	@Override
+	public List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
+		// TODO Auto-generated method stub
+
+		List<BizClaimVoucher> bizClaimVouchers=new ArrayList<>();
+		Page page1 = new Page();
+
+		try {
+
+			for (int id : bizclaimvoucherids) {
+
+				BizClaimVoucher bizClaimVoucher=(BizClaimVoucher) getHibernateTemplate().getSessionFactory().getCurrentSession().get(BizClaimVoucher.class, (long)id);
+				if(null!=bizClaimVoucher)
+				bizClaimVouchers.add(bizClaimVoucher);
+
+			}
+			//刚开始的页面为第一页
+			if (page1.getCurrentPage() == null){
+				page1.setCurrentPage(page);
+			} else {
+				page1.setCurrentPage(page1.getCurrentPage());
+			}
+			//设置每页数据为十条
+			page1.setPageSize(10);
+			//每页的开始数
+			page1.setStar((page1.getCurrentPage() - 1) * page1.getPageSize());
+			//list的大小
+			int count = bizClaimVouchers.size();
+			//设置总页数
+			page1.setTotalPage(count % rows == 0 ? count / rows : count / rows + 1);
+			//对list进行截取
+			page1.setDataList(bizClaimVouchers.subList(page1.getStar(),count-page1.getStar()>page1.getPageSize()?page1.getStar()+page1.getPageSize():count));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return (List<BizClaimVoucher>) page1.getDataList();
+	}
+
+	@Override
+	public int getClaimVouchersCountByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
+		// TODO Auto-generated method stub
+
+		List<BizClaimVoucher> bizClaimVouchers=new ArrayList<>();
+
+		try {
+
+			for (int id : bizclaimvoucherids) {
+
+				BizClaimVoucher bizClaimVoucher=(BizClaimVoucher) getHibernateTemplate().getSessionFactory().getCurrentSession().get(BizClaimVoucher.class, (long)id);
+				if(null!=bizClaimVoucher)
+					bizClaimVouchers.add(bizClaimVoucher);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return bizClaimVouchers.size();
 	}
 
 
