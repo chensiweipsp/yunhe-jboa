@@ -44,6 +44,6 @@ public interface IWorkflowService {
 
 	Map<String, Object> findCoordingByTask(String taskId);
 
-	
+	List<Integer> findLeaveBillByTaskId(List<Task> taskId);
 
 }

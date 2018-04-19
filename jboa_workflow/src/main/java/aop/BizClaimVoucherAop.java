@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.annotation.Resource;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -59,7 +62,19 @@ public class BizClaimVoucherAop {
 		Object resurlt=null;
 
 		return resurlt;
-
 	}
+
+	
+	
+/*	@Around("execution(* controller.BizClaimVoucherController.CheckClaimVouchershow(..))")
+	public Object checkClaimVoucher(ProceedingJoinPoint joinPoint)
+	{
+		Subject subject = SecurityUtils.getSubject();
+		
+		String sysempname = (String) subject.getPrincipal();
+		
+		
+		return null;
+	}*/
 
 }
