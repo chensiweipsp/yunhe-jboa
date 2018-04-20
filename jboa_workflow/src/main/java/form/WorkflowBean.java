@@ -1,6 +1,7 @@
 package form;
 
 import java.io.File;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 @Service("workflowBean")
@@ -16,8 +17,9 @@ public class WorkflowBean {
 	private String taskId;		//任务ID
 	private String outcome;		//连线名称
 	private String comment;		//备注
-	
-	
+	private String assignee;  //代办人
+	private List<String> createEmpRolNames;  //创建人角色权限
+
 	
 	public File getFile() {
 		return file;
@@ -66,6 +68,18 @@ public class WorkflowBean {
 	}
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	public String getAssignee() {
+		return assignee;
+	}
+	public void setAssignee(String assignee) {
+		this.assignee = assignee;
+	}
+	public List<String> getCreateEmpRolNames() {
+		return createEmpRolNames;
+	}
+	public void setCreateEmpRolNames(List<String> createEmpRolNames) {
+		this.createEmpRolNames = createEmpRolNames;
 	}
 	
 	

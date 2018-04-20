@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 
@@ -46,4 +47,7 @@ public interface IWorkflowService {
 
 	List<Integer> findLeaveBillByTaskId(List<Task> taskId);
 
+	List<ProcessInstance> findProcessInstancesByTaskId(List<String> taskId);
+	
+	ProcessInstance findProcessInstanceByTaskId(String taskId) ;
 }

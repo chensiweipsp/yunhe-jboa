@@ -83,7 +83,7 @@
         <omgdi:waypoint x="300.0" y="237.0"></omgdi:waypoint>
         <omgdi:waypoint x="420.0" y="236.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="299.0" y="245.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="72.0" x="299.0" y="245.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
@@ -127,7 +127,7 @@
         <omgdi:waypoint x="162.0" y="436.0"></omgdi:waypoint>
         <omgdi:waypoint x="162.0" y="264.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="170.0" y="419.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="60.0" x="170.0" y="419.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="部门经理回拒" id="BPMNEdge_部门经理回拒">

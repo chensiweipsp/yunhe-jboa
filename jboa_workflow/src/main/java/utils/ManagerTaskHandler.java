@@ -1,7 +1,13 @@
 package utils;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import entity.SysEmployee;
 
 
 /**
@@ -12,8 +18,12 @@ import org.activiti.engine.delegate.TaskListener;
 public class ManagerTaskHandler implements TaskListener {
 
 	public void notify(DelegateTask delegateTask) {
+//		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+//		delegateTask.getAssignee();
+		delegateTask.setAssignee(delegateTask.getAssignee());
+		
+//		SysEmployee employee =(SysEmployee) request.getSession().getAttribute("sysEmploye");
 		/**懒加载异常*/
-//		Employee employee = SessionContext.get();
 //		//设置个人任务的办理人
 //		delegateTask.setAssignee(employee.getManager().getName());
 		/**从新查询当前用户，再获取当前用户对应的领导*/
