@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,17 +43,17 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 	}
 
 	@Override
-	public int ispass(String pass, long id, String comm,int sn,int cn) {
+	public int ispass(HttpServletRequest request,String pass, long id, String comm,int sn,int cn) {
 
 		int count=0;
 
 		if("yes".equals(pass))
 		{
-			count=	bizClaimVoucherDao.pass(pass, id, comm, sn,cn);
+			count=	bizClaimVoucherDao.pass( request,pass, id, comm, sn,cn);
 		}
 		if("no".equals(pass))
 		{
-			count=	bizClaimVoucherDao.notgo(pass, id, comm, sn,cn);
+			count=	bizClaimVoucherDao.notgo( request,pass, id, comm, sn,cn);
 		}
 
 		return count;

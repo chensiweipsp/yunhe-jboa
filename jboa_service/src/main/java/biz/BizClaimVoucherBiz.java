@@ -3,6 +3,8 @@ package biz;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import entity.BizClaimVoucher;
 import entity.SysDepartment;
 import entity.SysEmployee;
@@ -23,7 +25,7 @@ public interface BizClaimVoucherBiz {
 
 	int deleteClaimVouchers(int id);
 	
-	int ispass(String pass,long id,String comm,int sn,int cn);
+	int ispass(HttpServletRequest request,String pass,long id,String comm,int sn,int cn);
 	
 	SysDepartment getnextDealSn(SysDepartment dept,String role  );
 	

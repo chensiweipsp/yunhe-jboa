@@ -81,24 +81,29 @@ public class EmpRealm extends AuthorizingRealm {
 	protected AuthenticationInfo doGetAuthenticationInfo(  
 			AuthenticationToken authenticationToken) throws AuthenticationException {  
 		//UsernamePasswordToken对象用来存放提交的登录信息  
-		UsernamePasswordToken token=(UsernamePasswordToken) authenticationToken;  
+		UsernamePasswordToken token=(UsernamePasswordToken) authenticationToken;
+		
 		//查出是否有此用户  
 		SysEmployee sysEmploye=null;
 		try {
 			sysEmploye = employeeDAO.findUserByUsername(token.getUsername());
+			
 			//SPRING耦合获取REQUEST
 			HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 			HttpSession session= request.getSession();
 			session.setMaxInactiveInterval(-1);
 			session.setAttribute("sysEmploye", sysEmploye);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
+		}
+		
 		if(sysEmploye!=null){  
 			//若存在，将此用户存放到登录认证info中   principal 主体    credentials 凭证   realmName
 			return new SimpleAuthenticationInfo(sysEmploye.getName(), sysEmploye.getPassword(), ByteSource.Util.bytes(sysEmploye.getSalt()),this.getName());  
 		}  
+		
 		return null;
 	}
 
