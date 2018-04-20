@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -118,20 +119,19 @@ public class WorkflowController  {
 
 		SysEmployee employee =	(SysEmployee) request.getSession().getAttribute("sysEmploye");
 		String name = employee.getName();
+		List<String> taksid = new ArrayList<String>();
 		List<Task> list = workflowService.findTaskListByName(name); 
 		for (Task task : list) {
-			System.err.println(task.getId());
-			System.err.println(task.getName());
-			System.err.println(task.getCreateTime());
-			System.err.println(task.getOwner());
-			System.err.println(task.getAssignee());
+			taksid.add(task.getId());
 		} 
+		
 
 		List<Integer> strings = workflowService.findLeaveBillByTaskId(list);
 
 		
-		request.setAttribute("taskids", strings);
-		
+		request.setAttribute("claimVoucherids", strings);
+		request.setAttribute("taskids", taksid);
+
 		
 		
 		return "forward:ClaimVoucher.do?method=checkclaimvoucherShowByTask";
@@ -156,8 +156,12 @@ public class WorkflowController  {
 	}
 
 	public String submitTask(){
+		
 		workflowService.saveSubmitTask(workflowBean);
+		
+		
 		return "listTask";
+
 	}
 
 	public String viewCurrentImage(){

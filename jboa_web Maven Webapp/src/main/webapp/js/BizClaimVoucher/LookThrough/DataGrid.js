@@ -42,98 +42,105 @@ $(function() {
 				} ] ],
 				// 标题
 				columns : [ [
-				             /*{colspan:5},
+					/*{colspan:5},
 								{title:'总金额',colspan:3,width:130,align:'center',resizable:false}
 								],[ */
+					{
+						title : 'taskid',
+						field : 'taskid',
+						width : 130,
+						fit : true,
+						resizable : false,
+						hidden:true
+					},
+					{
+						field : 'createSn',
+						width : 130,
+						fit : true,
+						resizable : false,
+						hidden:true
+					},
+					{
+						title : '填报人',
+						field : 'createName',
+						width : 130,
+						fit : true,
+						resizable : false,
+						formatter : function(value, row, index) {
+							if (value.name) {
+								return value.name;
 
-				             {
-				            	 field : 'createSn',
-				            	 width : 130,
-				            	 fit : true,
-				            	 resizable : false,
-				            	 hidden:true
-				             },
-				             {
-				            	 title : '填报人',
-				            	 field : 'createName',
-				            	 width : 130,
-				            	 fit : true,
-				            	 resizable : false,
-				            	 formatter : function(value, row, index) {
-				            		 if (value.name) {
-				            			 return value.name;
+							} else {
+								return value;
+							}
+						}
+					}, {
+						title : '待处理人',
+						field : 'nextDealSn',
+						width : 130,
+						resizable : false,
+						formatter : function(value, row, index) {
 
-				            		 } else {
-				            			 return value;
-				            		 }
-				            	 }
-				             }, {
-				            	 title : '待处理人',
-				            	 field : 'nextDealSn',
-				            	 width : 130,
-				            	 resizable : false,
-				            	 formatter : function(value, row, index) {
+							if (value.name) {
 
-				            		 if (value.name) {
+								return value.name;
 
-				            			 return value.name;
+							} else {
 
-				            		 } else {
+								return value;
 
-				            			 return value;
+							}
 
-				            		 }
+						}
+					}, {
+						title : '填写时间',
+						field : 'createTime',
+						width : 130,
+						formatter : formatterdate,
+						resizable : false
+					}, {
+						title : '事由',
+						field : 'event',
+						width : 130,
+						resizable : false
+					}, {
+						title : '总金额',
+						field : 'totalAccount',
+						width : 130,
+						resizable : false
+					}, {
+						title : '状态',
+						field : 'status',
+						width : 130,
+						resizable : false
+					} ] ],
+					// 待选分页数据条数
+					pageList : [ 5, 10, 20 ],
+					// 每页显示数据条数       
+					pageSize : 5,
+					// 分页
+					pagination : true,
+					// 在左侧是否显示行号
+					rownumbers : true,
+					// 工具栏
+					toolbar : [
+						{
+							id : 'update',
+							text : '审核报销单',
+							iconCls : 'icon-edit',
+							handler : function() {
+								var rows = $('#table').datagrid(
+								'getSelections');
+								if (rows.length != 1) {
+									$.messager.alert('提示',
+									'请选中一条您要审核的记录');
+								} else {
+									updatePerson();
+								}
+							}
+						}
 
-				            	 }
-				             }, {
-				            	 title : '填写时间',
-				            	 field : 'createTime',
-				            	 width : 130,
-				            	 formatter : formatterdate,
-				            	 resizable : false
-				             }, {
-				            	 title : '事由',
-				            	 field : 'event',
-				            	 width : 130,
-				            	 resizable : false
-				             }, {
-				            	 title : '总金额',
-				            	 field : 'totalAccount',
-				            	 width : 130,
-				            	 resizable : false
-				             }, {
-				            	 title : '状态',
-				            	 field : 'status',
-				            	 width : 130,
-				            	 resizable : false
-				             } ] ],
-				             // 待选分页数据条数
-				             pageList : [ 5, 10, 20 ],
-				             // 每页显示数据条数       
-				             pageSize : 5,
-				             // 分页
-				             pagination : true,
-				             // 在左侧是否显示行号
-				             rownumbers : true,
-				             // 工具栏
-				             toolbar : [
-				                        {
-				                        	id : 'update',
-				                        	text : '审核报销单',
-				                        	iconCls : 'icon-edit',
-				                        	handler : function() {
-				                        		var rows = $('#table').datagrid(
-				                        		'getSelections');
-				                        		if (rows.length != 1) {
-				                        			$.messager.alert('提示',
-				                        			'请选中一条您要审核的记录');
-				                        		} else {
-				                        			updatePerson();
-				                        		}
-				                        	}
-				                        }
-
-				                        ]
+						]
 			});
 
 	// 显示分页信息的底部显示栏
@@ -193,6 +200,7 @@ $(function() {
 			$('#table').datagrid('updateRow', {
 				index : myindex,
 				row : {
+					taskid: $("#taskid").val(),
 					createName: $("#updatecreateName").val(),
 					createSn : $("#updatecreateSn").val(),
 					nextDealSn : $("#updatenextDealSn").val(),

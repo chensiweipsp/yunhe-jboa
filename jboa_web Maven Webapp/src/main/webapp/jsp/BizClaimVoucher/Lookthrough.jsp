@@ -4,8 +4,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%
 	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -31,7 +30,6 @@
 	src="js/BizClaimVoucher/LookThrough/crud.js"></script>
 <script type="text/javascript"
 	src="js/BizClaimVoucher/LookThrough/DataGrid.js"></script>
-<jsp:include page="power.jsp"></jsp:include>
 </head>
 <body>
 	<div id="table"></div>
@@ -45,15 +43,27 @@
 						data-options="required:true,missingMessage:'输入数据不能为空!',tipPosition:'right'"></input>
 					</td>
 				</tr>
+				
+				<tr style="display: none;">
+					<td>taskid:</td>
+					<td><input id="taskid" name="taskid"></input></td>
+				</tr>
+				
 				<tr style="display: none;">
 					<td><input id="updatecreateSn" name="createSn"
 						style="display: none;" /></td>
 					<td></td>
 				</tr>
+
 				<tr>
 					<td>填报人:</td>
 					<td><input disabled="disabled" id="updatecreateName"
 						name="createName" /></td>
+				</tr>
+				<tr style="display: none" >
+					<td>填报人:</td>
+					<td><input id="updatecreateSn" 
+						name="createSn" /></td>
 				</tr>
 				<tr>
 					<td>待处理人:</td>
@@ -128,7 +138,7 @@
 		</div> -->
 		<div>
 			<select id="searchBy"
-				style="  background: transparent;border: 1px solid #ccc;">
+				style="background: transparent; border: 1px solid #ccc;">
 				<option>按填报人查询:</option>
 				<option>按待处理人查询:</option>
 			</select> <select onchange="search(this)" id="search">

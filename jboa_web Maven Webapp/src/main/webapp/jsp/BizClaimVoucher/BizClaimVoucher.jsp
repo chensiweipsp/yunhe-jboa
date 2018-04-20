@@ -53,7 +53,7 @@
 	<div id="dialog" style="display: none;">
 		<form id="addperson" method="post">
 			<table align="center">
-				<tr style="display:none;">
+				<tr style="display: none;">
 					<td>填报人:</td>
 					<td><select name="createSn" id="addselect">
 							<option value="${sessionScope.sysEmploye.sn}">${sessionScope.sysEmploye.name}</option>
@@ -67,8 +67,7 @@
 									<option value="${emp.sn}">${emp.name}</option>
 								</c:forEach>
 							</optgroup>
-					</select>
-					</td>
+					</select></td>
 				</tr>
 				<tr>
 					<td>填写时间:</td>
@@ -108,10 +107,9 @@
 						data-options="required:true,missingMessage:'输入数据不能为空!',tipPosition:'right'"></input>
 					</td>
 				</tr>
-				<tr style="display:none;">
+				<tr style="display: none;">
 					<td>填报人:</td>
-					<td><input id="updatecreateSn" name="createSn" />
-					</td>
+					<td><input id="updatecreateSn" name="createSn" /></td>
 				</tr>
 				<tr>
 					<td>待处理人:</td>
@@ -124,8 +122,7 @@
 									</c:forEach>
 								</optgroup>
 							</c:forEach> --%>
-					</select>
-					</td>
+					</select></td>
 				</tr>
 				<tr>
 					<td>填写时间:</td>
@@ -184,7 +181,7 @@
 		<shior:hasPermission name="search">
 			<div>
 				<select id="searchBy"
-					style="  background: transparent;border: 1px solid #ccc;  ">
+					style="background: transparent; border: 1px solid #ccc;">
 					<option>按填报人查询:</option>
 					<option>按待处理人查询:</option>
 				</select> <select onchange="search(this)" id="search">

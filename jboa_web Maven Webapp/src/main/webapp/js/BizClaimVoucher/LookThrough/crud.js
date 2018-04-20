@@ -53,6 +53,7 @@ function updatePerson() {
 	});
 
 	$('#pass').form('load', {
+		taskid: rows[0].taskid,
 		id: rows[0].id,
 		createName:rows[0].createSn.name,
 		createSn : rows[0].createSn.sn,

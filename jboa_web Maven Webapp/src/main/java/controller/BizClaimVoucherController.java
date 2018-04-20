@@ -13,6 +13,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+
+import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +43,19 @@ public class BizClaimVoucherController {
 	BizClaimVoucherBiz bizClaimVoucherBiz;
 	@Autowired
 	EmpBIZ empBIZ;
-	
+
+	@Resource(name="workflowService")
+	private IWorkflowService workflowService;
+
+
 	@RequestMapping(params="method=ClaimVouchershow")
 	@RequiresPermissions("query")
 	public @ResponseBody JsonData execute(HttpServletRequest request ,HttpServletResponse response)  {
 		SysEmployee sysEmployee=(SysEmployee) request.getSession().getAttribute("sysEmploye");
 		//获取角色权限  
-//		String role = request.getParameter("rols");
+		//		String role = request.getParameter("rols");
 		//获取操作权限
-//		String permission = request.getParameter("permissions");
+		//		String permission = request.getParameter("permissions");
 		String previous = request.getParameter("previous");
 		String createSn=request.getParameter("createSn");
 		String nextDeal=request.getParameter("nextDeal");
@@ -60,10 +67,10 @@ public class BizClaimVoucherController {
 		JsonData jsonData = new JsonData();
 		jsonData.setTotal(bizClaimVoucherBiz.getClaimVoucherCount(createSn, nextDeal, "", sysEmployee,  false));
 		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchers(createSn, nextDeal, "", page, rows, sysEmployee,  false));
- 		return jsonData;
+		return jsonData;
 	}
-	
-	
+
+
 	@RequestMapping(params="method=CheckClaimVouchershow")
 	public @ResponseBody JsonData execute02(HttpServletRequest request ,HttpServletResponse response)  {
 		String previous = request.getParameter("previous");
@@ -80,21 +87,43 @@ public class BizClaimVoucherController {
 		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchers(createSn, nextDeal, "", page, rows, sysEmployee,  true));
 		return jsonData;
 	}
+	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(params="method=checkclaimvoucherShowByTask")
 	public @ResponseBody JsonData checkclaimvoucherShowByTask(HttpServletRequest request ,HttpServletResponse response)  {
-		List<Integer> strings = (List<Integer>) request.getAttribute("taskids");
+
+		List<Integer> claimVoucherids = (List<Integer>) request.getAttribute("claimVoucherids");
+		//获取TASKID （为了绑定到数据网格中 在审核报销单的时候使用）
+		List<String> taskids =(List<String>)  request.getAttribute("taskids");
+
 		String previous = request.getParameter("previous");
 		int page=Integer.parseInt( request.getParameter("page"));
 		int rows=Integer.parseInt(request.getParameter("rows"));
 		if ("true".equals(previous)) {
 			page = page - 1; 
 		} 
-		
+
+
+		List<BizClaimVoucher> bizClaimVouchers=	bizClaimVoucherBiz.getClaimVouchersByTask(claimVoucherids, page, rows);
+
+      //开始对报销单关联业务流程（给予TASKID）
+		for (BizClaimVoucher bizClaimVoucher : bizClaimVouchers) {
+
+			for (String taskid : taskids) {
+				ProcessInstance processInstance=workflowService.findProcessInstanceByTaskId(taskid);
+				String id =processInstance.getBusinessKey().split("\\.")[1];
+				if(id.equals(bizClaimVoucher.getId().toString()))
+				{
+					bizClaimVoucher.setTaskid(taskid);
+				}
+			}
+
+		}
 		
 		JsonData jsonData = new JsonData();
-		jsonData.setTotal(bizClaimVoucherBiz.getClaimVouchersCountByTask(strings, page, rows));
-		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchersByTask(strings, page, rows));
-		
+		jsonData.setTotal(bizClaimVoucherBiz.getClaimVouchersCountByTask(claimVoucherids, page, rows));
+		jsonData.setRows(bizClaimVouchers);
+
 		return jsonData;
 	}
 
@@ -132,11 +161,12 @@ public class BizClaimVoucherController {
 		bizClaimVoucher.setStatus(status);
 		bizClaimVoucherBiz.SaveOrUpdateClaimVouchers(bizClaimVoucher);
 
-		
-		
+
+
 		return "ok";
 	}
 
+	@SuppressWarnings("unused")
 	@RequestMapping(params="method=ClaimVouchercomm",method=RequestMethod.POST)
 	public @ResponseBody String claimvouchercomm(HttpServletRequest request,HttpServletResponse response)
 	{
@@ -144,23 +174,23 @@ public class BizClaimVoucherController {
 		//		String sn=sysEmployee.getSn();
 		String cn=request.getParameter("createSn");
 		String sn=request.getParameter("nextDealSn");
-//		String power =sysEmployee.getPosition().getNameEn();
+		//		String power =sysEmployee.getPosition().getNameEn();
 		String id=request.getParameter("id");
 		String comm=request.getParameter("comm");
 		String ispass=request.getParameter("ispass");
-		bizClaimVoucherBiz.ispass(ispass, Long.parseLong(id), comm, Integer.parseInt(sn),Integer.parseInt(cn));
-		
+		bizClaimVoucherBiz.ispass( request,ispass, Long.parseLong(id), comm, Integer.parseInt(sn),Integer.parseInt(cn));
 
-		
-		
-		
+
+
+
+
 		//启动流程
 
-		
-		
-		
 
-		
+
+
+
+
 		return "ok";
 	}
 
@@ -360,8 +390,8 @@ public class BizClaimVoucherController {
 		 departmentForJson.setName(department.getName());
 		 return departmentForJson;
 	}
-	
-	
-	
-	
+
+
+
+
 }
