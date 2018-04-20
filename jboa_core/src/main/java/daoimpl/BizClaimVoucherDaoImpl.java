@@ -168,7 +168,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 	}
 
 
-	public int pass(String pass, long id, String comm,int sn,int cn) {
+	public int pass(HttpServletRequest request,String pass, long id, String comm,int sn,int cn) {
 		Session session=null;
 
 		try {
@@ -272,7 +272,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 	}
 
 	@Override
-	public int notgo(String pass, long id, String comm,int sn,int cn) {
+	public int notgo(HttpServletRequest request,String pass, long id, String comm,int sn,int cn) {
 		Session session=null;
 
 		try {

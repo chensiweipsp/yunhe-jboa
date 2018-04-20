@@ -37,6 +37,7 @@ public class BizClaimVoucher implements java.io.Serializable {
 	private BizClaimVoucherDetail bizClaimVoucherDetail;
 	private Set<BizCheckResult> bizCheckResults=new HashSet<BizCheckResult>();
 	private int schedule;
+	private String taskid;
 	// Constructors
 
 	
@@ -177,6 +178,12 @@ public class BizClaimVoucher implements java.io.Serializable {
 	}
 	public void setCreateName(SysEmployee createName) {
 		this.createName = createName;
+	}
+	public String getTaskid() {
+		return taskid;
+	}
+	public void setTaskid(String taskid) {
+		this.taskid = taskid;
 	}
 	
 	

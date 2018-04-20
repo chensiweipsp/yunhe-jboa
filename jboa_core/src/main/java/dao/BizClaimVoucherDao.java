@@ -3,6 +3,8 @@ package dao;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -31,9 +33,9 @@ public interface BizClaimVoucherDao {
 
 	int deleteClaimVouchers(int id);
 	
-	int pass(String pass,long id,String comm,int sn,int cn);
+	int pass(HttpServletRequest request,String pass,long id,String comm,int sn,int cn);
 	
-	int notgo(String pass,long id,String comm,int sn,int cn);
+	int notgo(HttpServletRequest request,String pass,long id,String comm,int sn,int cn);
 
 	Set<SysDepartment> getnextDealSn(int cn );
 	List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids,int page,int rows);
