@@ -16,6 +16,10 @@ public class WorkflowBean {
 	private String imageName;	//资源文件名称
 	private String taskId;		//任务ID
 	private String outcome;		//连线名称
+	
+	private String auditorRolename;
+	private String ispass;
+	
 	private String comment;		//备注
 	private String assignee;  //代办人
 	private List<String> createEmpRolNames;  //创建人角色权限
@@ -80,6 +84,18 @@ public class WorkflowBean {
 	}
 	public void setCreateEmpRolNames(List<String> createEmpRolNames) {
 		this.createEmpRolNames = createEmpRolNames;
+	}
+	public String getAuditorRolename() {
+		return auditorRolename;
+	}
+	public void setAuditorRolename(String auditorRolename) {
+		this.auditorRolename = auditorRolename;
+	}
+	public String getIspass() {
+		return ispass;
+	}
+	public void setIspass(String ispass) {
+		this.ispass = ispass;
 	}
 	
 	

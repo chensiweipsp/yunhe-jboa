@@ -27,7 +27,7 @@ public interface IWorkflowService {
 
 	void deleteProcessDefinitionByDeploymentId(String deploymentId);
 
-	void saveStartProcess(String ename,String key,String id);
+	void saveStartProcess(String ename,String next,String key,String id);
 
 	List<Task> findTaskListByName(String name);
 

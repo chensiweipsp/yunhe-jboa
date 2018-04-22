@@ -94,30 +94,36 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 
 	/**更新请假状态，启动流程实例，让启动的流程实例关联业务*/
 
-	public void saveStartProcess(String ename,String key,String id) {
+	public void saveStartProcess(String ename,String nextDeal,String key,String id) {
 		Map<String, Object> variables = new HashMap<String,Object>();
 		variables.put("inputUser", ename);//表示惟一用户
 		String objId = key+"."+id;
 		variables.put("objId", objId);
+		runtimeService.startProcessInstanceByKey(key,objId,variables);
+		Map<String, Object> variables2 = new HashMap<String,Object>();
 
-		if(SecurityUtils.getSubject().hasRole("staff"))
+		 if(SecurityUtils.getSubject().hasRole("manager"))
 		{
-			variables.put("role", "staff");
-		}
-		else if(SecurityUtils.getSubject().hasRole("manager"))
-		{
-			variables.put("role", "manager");
+			variables2.put("role", "manager");
 		}
 		else if(SecurityUtils.getSubject().hasRole("generalmanager"))
 		{
-			variables.put("role", "generalmanager");
+			variables2.put("role", "generalmanager");
 		}
 		else if(SecurityUtils.getSubject().hasRole("cashier"))
 		{
-			variables.put("role", "cashier");
+			variables2.put("role", "cashier");
 		}
-
-		runtimeService.startProcessInstanceByKey(key,objId,variables);
+		else if(SecurityUtils.getSubject().hasRole("staff"))
+		{
+			variables2.put("role", "staff");
+		}
+		List<Task> task =findTaskListByName(ename);
+		
+		for (Task task2 : task) {
+			taskService.complete(task2.getId(), variables2);
+		}
+		
 	}
 
 	/**2：使用当前用户名查询正在执行的任务表，获取当前任务的集合List<Task>*/
@@ -241,7 +247,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	}
 
 	/**指定连线的名称完成任务*/
-
 	public void saveSubmitTask(WorkflowBean workflowBean) {
 		//获取任务ID
 		String taskId = workflowBean.getTaskId();
@@ -253,6 +258,12 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		Long id = workflowBean.getId();
 		//获取待处理人
 		String assignee = workflowBean.getAssignee();
+		//获取审核人权限
+		String auditorRolename= workflowBean.getAuditorRolename();
+		//获取 是否通过
+		String ispass = workflowBean.getIspass();
+		
+		BizClaimVoucher bizClaimVoucher = bizClaimVoucherDao.findByID(id.toString());
 
 		/**
 		 * 1：在完成之前，添加一个批注信息，向act_hi_comment表中添加数据，用于记录对当前申请人的一些审核信息
@@ -280,25 +291,73 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				 流程变量的值：连线的名称
 		 */
 		Map<String, Object> variables = new HashMap<String,Object>();
-		if(outcome!=null && !outcome.equals("staff")){
-			
+
+
+		/*	if(outcome!=null && !outcome.equals("staff")){
+
 			variables.put("role", outcome);
-			
-			
+
+
+		}*/
+
+		if(ispass.equals("no"))
+		{
+			if(auditorRolename.equals("manager"))
+			{
+				variables.put("rollback", "manager");
+				bizClaimVoucher.setStatus("部门经理回拒");
+				
+			}else if(auditorRolename.equals("generalmanager"))
+			{
+				variables.put("rollback", "generalmanager");
+				bizClaimVoucher.setStatus("总经理回拒");
+
+			}else if(auditorRolename.equals("cashier"))
+			{
+				variables.put("rollback", "cashier");
+				bizClaimVoucher.setStatus("财务回拒");
+			}
 		}
+		else
+		{
+
+			 if(SecurityUtils.getSubject().hasRole("manager"))
+			{
+				 variables.put("role", "manager");
+			}
+			else if(SecurityUtils.getSubject().hasRole("generalmanager"))
+			{
+				variables.put("role", "generalmanager");
+			}
+			else if(SecurityUtils.getSubject().hasRole("cashier"))
+			{
+				variables.put("role", "cashier");
+			}
+			else if(SecurityUtils.getSubject().hasRole("staff"))
+			{
+				variables.put("role", "staff");
+			}
+			variables.put("rollback", "no");
+			bizClaimVoucher.setStatus("待通过");
+		}
+
 
 		List<String> roles=	workflowBean.getCreateEmpRolNames();
 		for (String string : roles) {
 			if(string.equals("generalmanager")) {
 				variables.put("createmp", "generalmanager");
 			}
+			else
+			{
+					variables.put("createmp", "default");
+			}
 		}
 
+
 		//3：使用任务ID，完成当前人的个人任务，同时流程变量
-		taskService.setAssignee(taskId, assignee);
+//		taskService.setAssignee(taskId, assignee);
 		taskService.complete(taskId, variables);
 		//4：当任务完成之后，需要指定下一个任务的办理人（使用类）-----已经开发完成
-
 		/**
 		 * 5：在完成任务之后，判断流程是否结束
    			如果流程结束了，更新请假单表的状态从1变成2（审核中-->审核完成）
@@ -309,7 +368,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		//流程结束了
 		if(pi==null){
 			//更新请假单表的状态从1变成2（审核中-->审核完成）
-			BizClaimVoucher bizClaimVoucher = bizClaimVoucherDao.findByID(id.toString());
 			bizClaimVoucher.setStatus("已通过审核");
 		}
 	}
@@ -341,7 +399,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		list = taskService.getProcessInstanceComments(processInstanceId);
 		return list;
 	}
-
 	/**使用请假单ID，查询历史批注信息*/
 	/*public List<Comment> findCommentByLeaveBillId(Long id) {
 		//使用请假单ID，查询请假单对象
@@ -388,7 +445,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		 map集合的key：表示坐标x,y,width,height
 		 map集合的value：表示坐标对应的值
 	 */
-
 	public Map<String, Object> findCoordingByTask(String taskId) {
 
 		//存放坐标

@@ -178,7 +178,7 @@ public class BizClaimVoucherController {
 		String id=request.getParameter("id");
 		String comm=request.getParameter("comm");
 		String ispass=request.getParameter("ispass");
-		bizClaimVoucherBiz.ispass( request,ispass, Long.parseLong(id), comm, Integer.parseInt(sn),Integer.parseInt(cn));
+		bizClaimVoucherBiz.ispass( request,ispass, Long.parseLong(id), comm, null==sn?Integer.parseInt(cn):Integer.parseInt(sn),Integer.parseInt(cn));
 
 
 

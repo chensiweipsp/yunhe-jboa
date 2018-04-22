@@ -2,6 +2,7 @@
 <%@ page language="java" import="entity.SysEmployee"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="shior" uri="http://shiro.apache.org/tags"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
@@ -65,6 +66,7 @@
 					<td><input id="updatecreateSn" 
 						name="createSn" /></td>
 				</tr>
+				<shior:lacksRole name="generalmanager">
 				<tr>
 					<td>待处理人:</td>
 					<td><select id="updatenextDealSn" name="nextDealSn">
@@ -75,6 +77,7 @@
 							</optgroup>
 					</select></td>
 				</tr>
+				</shior:lacksRole>
 				<tr>
 					<td>填写时间:</td>
 					<td><input disabled="disabled" class="easyui-datebox"
