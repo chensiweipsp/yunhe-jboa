@@ -492,9 +492,49 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 	}
 
 	@Override
-	public BizClaimVoucher SaveOrUpdateClaimVouchers2(BizClaimVoucher BizClaimVoucher) {
-		// TODO Auto-generated method stub
-		return null;
+	public BizClaimVoucher SaveOrUpdateClaimVouchers2(BizClaimVoucher BizClaimVoucher,String taskid) {
+		Session session=null;
+		try {
+			session= getHibernateTemplate().getSessionFactory().getCurrentSession();
+
+			if(null!=BizClaimVoucher.getId())
+			{
+
+				BizClaimVoucher bizClaimVoucher2= (entity.BizClaimVoucher) session.load(BizClaimVoucher.class, BizClaimVoucher.getId());
+				SysEmployee  cn=(SysEmployee) session.load (SysEmployee.class,BizClaimVoucher.getCreateSn().getSn() );
+				SysEmployee  nn=(SysEmployee) session.load(SysEmployee.class,BizClaimVoucher.getNextDealSn().getSn() );
+
+				bizClaimVoucher2.setCreateSn(cn);
+				bizClaimVoucher2.setNextDealSn(nn);
+				bizClaimVoucher2.setCreateTime(BizClaimVoucher.getCreateTime());
+				bizClaimVoucher2.setEvent(BizClaimVoucher.getEvent());
+				bizClaimVoucher2.setTotalAccount(BizClaimVoucher.getTotalAccount());
+				bizClaimVoucher2.setStatus(BizClaimVoucher.getStatus());
+				bizClaimVoucher2.setTaskid(taskid);
+
+
+			}
+			else {
+
+				int createSn =BizClaimVoucher.getCreateSn().getSn();
+				int nextdealsn =BizClaimVoucher.getNextDealSn().getSn();
+
+				SysEmployee create=	(SysEmployee) session.get(SysEmployee.class, createSn);
+				SysEmployee nextdeal=	(SysEmployee) session.get(SysEmployee.class, nextdealsn);;
+
+
+				BizClaimVoucher.setCreateSn(create);
+				BizClaimVoucher.setNextDealSn(nextdeal);
+				session.save(BizClaimVoucher);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// spring aop  异常捕获原理：被拦截的方法需显式抛出异常，并不能经任何处理，这样aop代理才能捕获到方法的异常，才能进行回滚，默认情况下aop只捕获runtimeexception的异常，但可以通过  
+			//在service的方法中不使用try catch 或者在catch中最后加上throw new runtimeexcetpion（），这样程序异常时才能被aop捕获进而回滚
+			throw new RuntimeException();
+
+		}
+		return BizClaimVoucher;
 	}
 
 
