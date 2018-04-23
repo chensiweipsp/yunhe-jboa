@@ -11,6 +11,8 @@ import java.util.zip.ZipInputStream;
 
 import javax.annotation.Resource;
 
+import org.activiti.bpmn.model.Artifact;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -18,6 +20,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -26,6 +30,7 @@ import org.activiti.engine.task.Task;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import dao.BizClaimVoucherDao;
 import entity.BizClaimVoucher;
@@ -94,36 +99,118 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 
 	/**更新请假状态，启动流程实例，让启动的流程实例关联业务*/
 
-	public void saveStartProcess(String ename,String nextDeal,String key,String id) {
+	public void saveStartProcess(String saveorupdate,String ename,String nextDeal,String key,String id) {
 		Map<String, Object> variables = new HashMap<String,Object>();
 		variables.put("inputUser", ename);//表示惟一用户
 		String objId = key+"."+id;
 		variables.put("objId", objId);
 		runtimeService.startProcessInstanceByKey(key,objId,variables);
 		Map<String, Object> variables2 = new HashMap<String,Object>();
-
-		 if(SecurityUtils.getSubject().hasRole("manager"))
-		{
-			variables2.put("role", "manager");
-		}
-		else if(SecurityUtils.getSubject().hasRole("generalmanager"))
-		{
-			variables2.put("role", "generalmanager");
-		}
-		else if(SecurityUtils.getSubject().hasRole("cashier"))
-		{
-			variables2.put("role", "cashier");
-		}
-		else if(SecurityUtils.getSubject().hasRole("staff"))
-		{
-			variables2.put("role", "staff");
-		}
 		List<Task> task =findTaskListByName(ename);
-		
-		for (Task task2 : task) {
-			taskService.complete(task2.getId(), variables2);
+
+		BizClaimVoucher bizClaimVoucher= bizClaimVoucherDao.findByID(id);
+
+
+		if(saveorupdate.equals("save"))
+		{
+			//添加
+			if(SecurityUtils.getSubject().hasRole("manager"))
+			{
+				variables2.put("role", "manager");
+			}
+			else if(SecurityUtils.getSubject().hasRole("generalmanager"))
+			{
+				variables2.put("role", "generalmanager");
+			}
+			else if(SecurityUtils.getSubject().hasRole("cashier"))
+			{
+				variables2.put("role", "cashier");
+			}
+			else if(SecurityUtils.getSubject().hasRole("staff"))
+			{
+				variables2.put("role", "staff");
+			}
+
+			for (Task task2 : task) {
+				taskService.complete(task2.getId(), variables2);
+
+				List<Task> task3 =findTaskListByName(nextDeal);
+				for (Task task4 : task3) {
+					bizClaimVoucher.setTaskid(task4.getId());
+
+				}
+
+			}
 		}
-		
+		else
+		{
+
+
+			//修改
+			if(SecurityUtils.getSubject().hasRole("staff"))
+			{
+				variables2.put("role", "staff");
+				task =findTaskListByName(ename);
+
+				for (Task task2 : task) {
+					taskService.complete(task2.getId(), variables2);
+					List<Task> task3 =findTaskListByName(nextDeal);
+					for (Task task4 : task3) {
+						bizClaimVoucher.setTaskid(task4.getId());
+
+					}
+
+				}
+			}
+			else if(SecurityUtils.getSubject().hasRole("manager"))
+			{
+				variables2.put("rollback", "no");
+				task =findTaskListByName(ename);
+
+				for (Task task2 : task) {
+					taskService.complete(task2.getId(), variables2);
+					List<Task> task3 =findTaskListByName(nextDeal);
+					for (Task task4 : task3) {
+						bizClaimVoucher.setTaskid(task4.getId());
+
+					}
+				}
+			}
+			else if(SecurityUtils.getSubject().hasRole("cashier"))
+			{
+
+				variables2.put("createmp", "default");
+				task =findTaskListByName(ename);
+
+				for (Task task2 : task) {
+					taskService.complete(task2.getId(), variables2);
+					List<Task> task3 =findTaskListByName(nextDeal);
+					for (Task task4 : task3) {
+						bizClaimVoucher.setTaskid(task4.getId());
+
+					}
+				}
+
+			}
+			else if(SecurityUtils.getSubject().hasRole("generalmanager"))
+			{
+
+				variables2.put("rollback", "no");
+				task =findTaskListByName(ename);
+
+				for (Task task2 : task) {
+					taskService.complete(task2.getId(), variables2);
+					List<Task> task3 =findTaskListByName(nextDeal);
+					for (Task task4 : task3) {
+						bizClaimVoucher.setTaskid(task4.getId());
+
+					}
+				}
+
+			}
+		}
+
+
 	}
 
 	/**2：使用当前用户名查询正在执行的任务表，获取当前任务的集合List<Task>*/
@@ -262,7 +349,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		String auditorRolename= workflowBean.getAuditorRolename();
 		//获取 是否通过
 		String ispass = workflowBean.getIspass();
-		
+
 		BizClaimVoucher bizClaimVoucher = bizClaimVoucherDao.findByID(id.toString());
 
 		/**
@@ -306,7 +393,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			{
 				variables.put("rollback", "manager");
 				bizClaimVoucher.setStatus("部门经理回拒");
-				
+
 			}else if(auditorRolename.equals("generalmanager"))
 			{
 				variables.put("rollback", "generalmanager");
@@ -321,21 +408,33 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		else
 		{
 
-			 if(SecurityUtils.getSubject().hasRole("manager"))
+			if(SecurityUtils.getSubject().hasRole("manager"))
 			{
-				 variables.put("role", "manager");
+				variables.put("role", "manager");
+				bizClaimVoucher.setSchedule(2);
+
 			}
 			else if(SecurityUtils.getSubject().hasRole("generalmanager"))
 			{
+
 				variables.put("role", "generalmanager");
+				bizClaimVoucher.setSchedule(4);
+
 			}
 			else if(SecurityUtils.getSubject().hasRole("cashier"))
 			{
+
 				variables.put("role", "cashier");
+				bizClaimVoucher.setSchedule(3);
+
+
 			}
 			else if(SecurityUtils.getSubject().hasRole("staff"))
 			{
+
 				variables.put("role", "staff");
+				bizClaimVoucher.setSchedule(1);
+
 			}
 			variables.put("rollback", "no");
 			bizClaimVoucher.setStatus("待通过");
@@ -349,13 +448,13 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			}
 			else
 			{
-					variables.put("createmp", "default");
+				variables.put("createmp", "default");
 			}
 		}
 
 
 		//3：使用任务ID，完成当前人的个人任务，同时流程变量
-//		taskService.setAssignee(taskId, assignee);
+		//		taskService.setAssignee(taskId, assignee);
 		taskService.complete(taskId, variables);
 		//4：当任务完成之后，需要指定下一个任务的办理人（使用类）-----已经开发完成
 		/**
@@ -369,7 +468,9 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		if(pi==null){
 			//更新请假单表的状态从1变成2（审核中-->审核完成）
 			bizClaimVoucher.setStatus("已通过审核");
+			bizClaimVoucher.setSchedule(4);
 		}
+
 	}
 	/**获取批注信息，传递的是当前任务ID，获取历史任务ID对应的批注*/
 
@@ -446,13 +547,12 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		 map集合的value：表示坐标对应的值
 	 */
 	public Map<String, Object> findCoordingByTask(String taskId) {
-
 		//存放坐标
 		Map<String, Object> map = new HashMap<String,Object>();
-		/*		//使用任务ID，查询任务对象
+		//使用任务ID，查询任务对象
 		Task task = taskService.createTaskQuery()//
-					.taskId(taskId)//使用任务ID查询
-					.singleResult();
+				.taskId(taskId)//使用任务ID查询
+				.singleResult();
 		//获取流程定义的ID
 		String processDefinitionId = task.getProcessDefinitionId();
 		//获取流程定义的实体对象（对应.bpmn文件中的数据）
@@ -461,8 +561,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		String processInstanceId = task.getProcessInstanceId();
 		//使用流程实例ID，查询正在执行的执行对象表，获取当前活动对应的流程实例对象
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//创建流程实例查询
-					.processInstanceId(processInstanceId)//使用流程实例ID查询
-					.singleResult();
+				.processInstanceId(processInstanceId)//使用流程实例ID查询
+				.singleResult();
 		//获取当前活动的ID
 		String activityId = pi.getActivityId();
 		//获取当前活动对象
@@ -471,7 +571,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		map.put("x", activityImpl.getX());
 		map.put("y", activityImpl.getY());
 		map.put("width", activityImpl.getWidth());
-		map.put("height", activityImpl.getHeight());*/
+		map.put("height", activityImpl.getHeight());
 		return map;
 	}
 
@@ -479,4 +579,5 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

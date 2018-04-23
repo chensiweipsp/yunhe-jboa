@@ -39,6 +39,10 @@ public class BizClaimVoucherAop {
 	@Around("execution(* daoimpl.BizClaimVoucherDaoImpl.SaveOrUpdateClaimVouchers(..))")
 	public Object send(ProceedingJoinPoint joinPoint)
 	{
+		Object[] objects=	joinPoint.getArgs();
+
+		BizClaimVoucher bizClaimVoucher= (BizClaimVoucher) objects[0];
+		String saveorupdate =null!=bizClaimVoucher.getId()?"update":"save";
 
 		BizClaimVoucher result = null;
 		try {
@@ -47,17 +51,13 @@ public class BizClaimVoucherAop {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Object[] objects=	joinPoint.getArgs();
-
-		BizClaimVoucher bizClaimVoucher= (BizClaimVoucher) objects[0];
-
 		//获取下一个任务的办理人
 		int createEmpSn= bizClaimVoucher.getCreateSn().getSn();
 		String createEmp = ((SysEmployee)sysEmployeeDao.findUserByUserSn(createEmpSn)).getName();
 		int nextDealSn= bizClaimVoucher.getNextDealSn().getSn();
 		String nextDeal = ((SysEmployee)sysEmployeeDao.findUserByUserSn(nextDealSn)).getName();
 
-		
+
 		String key=bizClaimVoucher.getClass().getSimpleName();
 
 		//		int id =((Long)bizClaimVoucher.getId()).intValue();
@@ -68,10 +68,15 @@ public class BizClaimVoucherAop {
 		//		String ename =bizClaimVoucher.getCreateSn().getName();
 
 		session.setAttribute("nextEmp", nextDeal);
-		
+
 		System.err.println(session.getAttribute("createSn"));
-		IWorkflowService.saveStartProcess(createEmp, nextDeal,key, id);
-		
+		try {
+			IWorkflowService.saveStartProcess(saveorupdate,createEmp, nextDeal,key, id);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		Object resurlt=null;
 
 		return resurlt;
@@ -84,13 +89,13 @@ public class BizClaimVoucherAop {
 	{
 		Object result=null;
 		try {
-			 result = joinPoint.proceed();
+			result = joinPoint.proceed();
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return result;
 		}
-		
+
 		Object[] objects=	joinPoint.getArgs();
 		HttpServletRequest request = (HttpServletRequest) objects[0];
 
@@ -114,7 +119,7 @@ public class BizClaimVoucherAop {
 		{
 			outcome=  "cashier";
 		}
-		
+
 		//批注信息
 		String comment=!request.getParameter("comm").equals("")?request.getParameter("comm"):null;
 		//获取报销单ID
@@ -144,27 +149,27 @@ public class BizClaimVoucherAop {
 			auditorRolename="cashier";
 
 		}
-		
+
 		//是否通过审核
-		
+
 		String ispass  = (String) objects[1];
-		
-		
+
+
 		SysEmployee nextEmp=	sysEmployeeDao.findUserByUserSn(Integer.parseInt(null==nextDealSn?createSn:nextDealSn));
-		
+
 		session.setAttribute("nextEmp", nextEmp.getName());
-		
+
 
 		SysEmployee createEmp=	sysEmployeeDao.findUserByUserSn(Integer.parseInt(createSn));
-		
-		
-		
+
+
+
 		List<String> roles = new ArrayList<String>();
 		for (SysRole role : createEmp.getRoles()) {
 			roles.add(role.getRolename());
 		}
-		
-		
+
+
 		WorkflowBean workflowBean =new WorkflowBean();
 		workflowBean.setId(Long.parseLong(id));
 		workflowBean.setComment(comment);
@@ -175,8 +180,8 @@ public class BizClaimVoucherAop {
 		workflowBean.setAuditorRolename(auditorRolename);
 		workflowBean.setIspass(ispass);
 		IWorkflowService.saveSubmitTask(workflowBean);
-		
-		
+
+
 		return result;
 	}
 

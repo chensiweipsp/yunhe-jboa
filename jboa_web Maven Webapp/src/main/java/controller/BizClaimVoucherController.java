@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -51,7 +52,10 @@ public class BizClaimVoucherController {
 	@RequestMapping(params="method=ClaimVouchershow")
 	@RequiresPermissions("query")
 	public @ResponseBody JsonData execute(HttpServletRequest request ,HttpServletResponse response)  {
+		
+		
 		SysEmployee sysEmployee=(SysEmployee) request.getSession().getAttribute("sysEmploye");
+		
 		//获取角色权限  
 		//		String role = request.getParameter("rols");
 		//获取操作权限
@@ -67,6 +71,7 @@ public class BizClaimVoucherController {
 		JsonData jsonData = new JsonData();
 		jsonData.setTotal(bizClaimVoucherBiz.getClaimVoucherCount(createSn, nextDeal, "", sysEmployee,  false));
 		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchers(createSn, nextDeal, "", page, rows, sysEmployee,  false));
+		
 		return jsonData;
 	}
 
@@ -135,6 +140,7 @@ public class BizClaimVoucherController {
 		map.put("schedule", bizClaimVoucher.getSchedule());
 		return "BizClaimVoucher/status";
 	}
+
 
 	@RequestMapping(params="method=saveorUpdate")
 	public @ResponseBody String saveorUpdate(HttpServletRequest request ,HttpServletResponse response) throws ParseException

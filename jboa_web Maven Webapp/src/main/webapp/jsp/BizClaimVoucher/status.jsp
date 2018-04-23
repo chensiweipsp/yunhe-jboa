@@ -32,6 +32,7 @@ div#authorization_box,div#auth_confirm {
     marguin:0 auto;
     overflow:hidden;
 }
+
 div#authorization_box {
     position:fixed;
     z-index:9999;
@@ -95,10 +96,13 @@ div#authorization_box {
       }]
     });
     
+    
    var temp ="<%= (Integer)request.getAttribute("schedule")%>";
     $(".ystep2").setStep(Number(temp)   );
-    
   </script>
+  
+  
   <img style="position:fixed;bottom:0px;left:0px" src="images/timg.jpg" border="0" onclick="javascript:history.back(-1);" title="返回上一页"> 
+ 
   </body>
 </html>

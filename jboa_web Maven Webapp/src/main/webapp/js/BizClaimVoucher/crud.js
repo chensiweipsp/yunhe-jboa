@@ -131,9 +131,10 @@ function showStatus()
 	var rows = $('#table').datagrid('getSelections');
 
 	var id=rows[0].id;
+	var taskid=rows[0].taskid;
 
 	var temp = document.createElement("form");        
-	temp.action = "ClaimVoucher.do?method=gitStatus";        
+	temp.action = "workflowAction.do?method=getStatus&taskid="+taskid+"";        
 	temp.method = "post";        
 	temp.style.display = "none";        
 	var size=0; 
@@ -146,5 +147,6 @@ function showStatus()
 	document.body.appendChild(temp);        
 	temp.submit();        
 
-
 }
+
+

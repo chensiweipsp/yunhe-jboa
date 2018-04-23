@@ -63,6 +63,14 @@ $(function() {
 										}
 									}
 								},*/
+									{
+										title : 'taskid',
+										field : 'taskid',
+										width : 130,
+										fit : true,
+										resizable : false,
+										hidden:true
+									},
 								{
 									title : '填报人',
 									field : 'createSn',

@@ -320,41 +320,41 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
-			<version>6.0.0</version>
+			<version>5.22.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-spring -->
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
-			<version>6.0.0</version>
+			<version>5.22.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-model -->
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-model</artifactId>
-			<version>6.0.0</version>
+			<version>5.22.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-json-converter -->
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-json-converter</artifactId>
-			<version>6.0.0</version>
+			<version>5.22.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-converter -->
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-converter</artifactId>
-			<version>6.0.0</version>
+			<version>5.22.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.activiti/activiti-bpmn-layout -->
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-layout</artifactId>
-			<version>6.0.0</version>
+			<version>5.22.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
