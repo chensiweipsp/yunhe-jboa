@@ -137,6 +137,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				List<Task> task3 =findTaskListByName(nextDeal);
 				for (Task task4 : task3) {
 					bizClaimVoucher.setTaskid(task4.getId());
+					break;
 				}
 			}
 		}
@@ -155,7 +156,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					List<Task> task3 =findTaskListByName(nextDeal);
 					for (Task task4 : task3) {
 						bizClaimVoucher.setTaskid(task4.getId());
-
+						break;
 					}
 
 				}
@@ -170,7 +171,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					List<Task> task3 =findTaskListByName(nextDeal);
 					for (Task task4 : task3) {
 						bizClaimVoucher.setTaskid(task4.getId());
-
+						break;
 					}
 				}
 			}
@@ -185,7 +186,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					List<Task> task3 =findTaskListByName(nextDeal);
 					for (Task task4 : task3) {
 						bizClaimVoucher.setTaskid(task4.getId());
-
+						break;
 					}
 				}
 
@@ -201,7 +202,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					List<Task> task3 =findTaskListByName(nextDeal);
 					for (Task task4 : task3) {
 						bizClaimVoucher.setTaskid(task4.getId());
-
+						break;
 					}
 				}
 
@@ -215,7 +216,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	public List<Task> findTaskListByName(String name) {
 		List<Task> list = taskService.createTaskQuery()//s
 				.taskAssignee(name)//指定个人任务查询
-				.orderByTaskCreateTime().asc()//
+				.orderByTaskCreateTime().desc()//
 				.list();
 		return list;
 	}
@@ -451,11 +452,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				variables.put("createmp", "default");
 			}
 		}
-
-		bizClaimVoucher.setTaskid(task.getId());
-		bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher);
-		
-		
 		//3：使用任务ID，完成当前人的个人任务，同时流程变量
 		//		taskService.setAssignee(taskId, assignee);
 		taskService.complete(taskId, variables);
@@ -464,6 +460,15 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		 * 5：在完成任务之后，判断流程是否结束
    			如果流程结束了，更新请假单表的状态从1变成2（审核中-->审核完成）
 		 */
+		List<Task> task3 =findTaskListByName(assignee);
+		for (Task task4 : task3) {
+			bizClaimVoucher.setTaskid(task4.getId());
+			bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,task4.getId());
+			break;
+		}
+		
+
+		
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
 				.processInstanceId(processInstanceId)//使用流程实例ID查询
 				.singleResult();
