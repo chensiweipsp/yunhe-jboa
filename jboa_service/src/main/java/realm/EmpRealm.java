@@ -33,7 +33,6 @@ import entity.SysDepartment;
 import entity.SysEmployee;
 import entity.SysPermission;
 import entity.SysRole;
-import biz.EmpBIZ;
 
 @Component("realm")
 public class EmpRealm extends AuthorizingRealm {  

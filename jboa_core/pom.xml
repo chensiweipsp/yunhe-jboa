@@ -15,7 +15,7 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
+	<dependency>
 			<groupId>com.zx</groupId>
 			<artifactId>jboa_lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

@@ -491,6 +491,12 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 		return bizClaimVouchers.size();
 	}
 
+	@Override
+	public BizClaimVoucher SaveOrUpdateClaimVouchers2(BizClaimVoucher BizClaimVoucher) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 

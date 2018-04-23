@@ -392,12 +392,14 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				variables.put("rollback", "manager");
 				bizClaimVoucher.setStatus("部门经理回拒");
 
-			}else if(auditorRolename.equals("generalmanager"))
+			}
+			else if(auditorRolename.equals("generalmanager"))
 			{
 				variables.put("rollback", "generalmanager");
 				bizClaimVoucher.setStatus("总经理回拒");
 
-			}else if(auditorRolename.equals("cashier"))
+			}
+			else if(auditorRolename.equals("cashier"))
 			{
 				variables.put("rollback", "cashier");
 				bizClaimVoucher.setStatus("财务回拒");
@@ -450,7 +452,10 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			}
 		}
 
-
+		bizClaimVoucher.setTaskid(task.getId());
+		bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher);
+		
+		
 		//3：使用任务ID，完成当前人的个人任务，同时流程变量
 		//		taskService.setAssignee(taskId, assignee);
 		taskService.complete(taskId, variables);

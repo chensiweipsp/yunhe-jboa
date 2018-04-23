@@ -140,15 +140,10 @@ public class WorkflowController  {
 			taksid.add(task.getId());
 		} 
 		
-
 		List<Integer> strings = workflowService.findLeaveBillByTaskId(list);
-
 		
 		request.setAttribute("claimVoucherids", strings);
 		request.setAttribute("taskids", taksid);
-
-		
-		
 		return "forward:ClaimVoucher.do?method=checkclaimvoucherShowByTask";
 	}
 	
@@ -198,11 +193,14 @@ public class WorkflowController  {
 	}
 	
 	@RequestMapping(params="method=getImage")
-	public  void viewImage(HttpServletResponse servletResponse) throws Exception{
+	public  void viewImage(HttpServletRequest httpServletRequest,HttpServletResponse servletResponse) throws Exception{
+		workflowBean.setDeploymentId(httpServletRequest.getParameter("deploymentId"));
+		workflowBean.setImageName(httpServletRequest.getParameter("imageName"));
+
 		String deploymentId = workflowBean.getDeploymentId();
 		String imageName = workflowBean.getImageName();
 		InputStream in = workflowService.findImageInputStream(deploymentId,imageName);
-		OutputStream out = ServletActionContext.getResponse().getOutputStream();
+		OutputStream out = servletResponse.getOutputStream();
 		for(int b=-1;(b=in.read())!=-1;){
 			out.write(b);
 		}

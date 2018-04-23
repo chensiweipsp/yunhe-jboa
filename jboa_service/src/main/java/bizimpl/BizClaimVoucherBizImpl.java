@@ -5,16 +5,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import biz.BizClaimVoucherBiz;
-import biz.DeptBIZ;
-
 import dao.BizClaimVoucherDao;
 import dao.DeptDAO;
 import entity.BizClaimVoucher;
@@ -30,19 +25,19 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 	BizClaimVoucherDao bizClaimVoucherDao;
 	@Autowired
 	DeptDAO deptDAO;
-	@Override
+	
 	public BizClaimVoucher SaveOrUpdateClaimVouchers(BizClaimVoucher BizClaimVoucher
 			) {
 		// TODO Auto-generated method stub
 		return bizClaimVoucherDao.SaveOrUpdateClaimVouchers(BizClaimVoucher);
 	}
-	@Override
+	
 	public int deleteClaimVouchers(int id) {
 		// TODO Auto-generated method stub
 		return bizClaimVoucherDao.deleteClaimVouchers(id);
 	}
 
-	@Override
+	
 	public int ispass(HttpServletRequest request,String pass, long id, String comm,int sn,int cn) {
 
 		int count=0;
@@ -58,11 +53,11 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 
 		return count;
 	}
-	@Override
+	
 	public BizClaimVoucher findByID(String id) {
 		return bizClaimVoucherDao.findByID(id);
 	}
-	@Override
+	
 	public SysDepartment getnextDealSn(SysDepartment dept,String role) {
 		StringBuilder stringBuilder = new StringBuilder();
 		Iterator<SysEmployee> iterator= dept.getEmps().iterator();
@@ -98,7 +93,7 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		}
 		return dept;
 	}
-	@Override
+	
 	public int getClaimVoucherCount(String searchCreateSn,String searchnextDealSn,String hql, SysEmployee sEmploye,
 			Boolean isLookThrough) {
 		StringBuilder stringBuilder = new StringBuilder("select count(*) from BizClaimVoucher as bv  where 1=1 ");
@@ -145,7 +140,7 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 	}
 
 	
-	@Override
+	
 	public List<BizClaimVoucher> getClaimVouchers(String searchCreateSn,String searchnextDealSn,String hql,int page, int rows,
 			SysEmployee sEmployee, 
 			Boolean isLookThrough) {
@@ -176,10 +171,13 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		else if(null!=searchCreateSn)
 		{
 			stringBuilder.append("and bv.createSn.sn='"+searchCreateSn+"'");
-		}else if (null!=searchnextDealSn)
+		}
+		
+		else if (null!=searchnextDealSn)
 		{
 			stringBuilder.append("and bv.nextDealSn.sn='"+searchnextDealSn+"'");
 		}
+		
 		}
 		else
 		{
@@ -187,12 +185,12 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		}
 		return bizClaimVoucherDao.getClaimVouchers(page, rows, stringBuilder.toString(), isLookThrough);
 	}
-	@Override
+	
 	public List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
 		// TODO Auto-generated method stub
 		return bizClaimVoucherDao.getClaimVouchersByTask(bizclaimvoucherids, page, rows);
 	}
-	@Override
+	
 	public int getClaimVouchersCountByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
 		// TODO Auto-generated method stub
 		return bizClaimVoucherDao.getClaimVouchersCountByTask(bizclaimvoucherids, page, rows);
