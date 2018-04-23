@@ -250,7 +250,15 @@ $(function() {
 								if (rows.length != 1) {
 									$.messager.alert('提示',
 									'请选中一条您要查看报销单的记录');
-								} else {
+
+
+								}else if(rows[0].status == "已通过审核")
+								{
+									$.messager.alert('提示',
+									'该报销单已经通过了审核');
+								}
+
+								else {
 									showStatus();
 								}
 							}
