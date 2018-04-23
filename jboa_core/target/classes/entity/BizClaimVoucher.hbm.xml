@@ -11,11 +11,8 @@
 		</id>
 
 		<!-- <one-to-one name="bizClaimVoucherDetail"></one-to-one> -->
-<!-- 		<set name="bizCheckResults">
-			<key column="CLAIM_ID"></key>
-			<one-to-many class="entity.BizCheckResult" />
-		</set>
- -->
+		<!-- <set name="bizCheckResults"> <key column="CLAIM_ID"></key> <one-to-many 
+			class="entity.BizCheckResult" /> </set> -->
 
 		<many-to-one name="createSn" class="entity.SysEmployee"
 			lazy="false">
@@ -51,5 +48,9 @@
 		<property name="schedule" type="java.lang.Integer">
 			<column name="SCHEDULE"></column>
 		</property>
+		<property name="taskid" type="java.lang.String">
+			<column name="TASKID" />
+		</property>
+
 	</class>
 </hibernate-mapping>
