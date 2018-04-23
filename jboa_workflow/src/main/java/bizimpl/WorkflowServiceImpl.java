@@ -138,7 +138,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				for (Task task4 : task3) {
 					bizClaimVoucher.setTaskid(task4.getId());
 				}
-
 			}
 		}
 		else
