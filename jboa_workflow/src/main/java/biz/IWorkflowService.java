@@ -39,7 +39,7 @@ public interface IWorkflowService {
 
 	List<Comment> findCommentByTaskId(String taskId);
 
-	List<Comment> findCommentByLeaveBillId(Long id);
+	List<Comment> findCommentByClaimVoucherId(String id);
 
 	ProcessDefinition findProcessDefinitionByTaskId(String taskId);
 

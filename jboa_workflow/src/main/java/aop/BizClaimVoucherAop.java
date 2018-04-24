@@ -60,12 +60,10 @@ public class BizClaimVoucherAop {
 
 		String key=bizClaimVoucher.getClass().getSimpleName();
 
-		//		int id =((Long)bizClaimVoucher.getId()).intValue();
 		String id = result.getId().toString();
 
 		bizClaimVoucher= bizClaimVoucherDao.findByID(String.valueOf(id));
 
-		//		String ename =bizClaimVoucher.getCreateSn().getName();
 
 		session.setAttribute("nextEmp", nextDeal);
 

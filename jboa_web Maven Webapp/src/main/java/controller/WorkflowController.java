@@ -78,8 +78,6 @@ public class WorkflowController  {
 	public String deployHome(ModelMap modelMap){
 		List<Deployment> depList = workflowService.findDeploymentList();
 		List<ProcessDefinition> pdList = workflowService.findProcessDefinitionList();
-		//		ValueContext.putValueContext("depList", depList);
-		//		ValueContext.putValueContext("pdList", pdList);
 		modelMap.put("depList", depList);
 		modelMap.put("pdList", pdList);
 		return "workflow/workflow";
@@ -110,23 +108,6 @@ public class WorkflowController  {
 		return "listTask";
 	}
 
-
-	/*	@RequestMapping(params="method=getlisttask")
-	public @ResponseBody List<Task> listTask(ModelMap modelMap,HttpServletRequest httpServletRequest){
-		SysEmployee sysEmployee =	(SysEmployee) httpServletRequest.getSession().getAttribute("sysEmploye");
-		String name = sysEmployee.getName();
-		List<Task> list = workflowService.findTaskListByName(name); 
-		for (Task task : list) {
-			System.err.println(task.getId());
-			System.err.println(task.getName());
-			System.err.println(task.getCreateTime());
-			System.err.println(task.getOwner());
-			System.err.println(task.getAssignee());
-		} 
-
-
-		return list;
-	}*/
 
 	@RequestMapping(params="method=getlisttask")
 	public  String execute02(HttpServletRequest request ,HttpServletResponse response)  {
@@ -176,10 +157,6 @@ public class WorkflowController  {
 	
 	public String audit(){
 		String taskId = workflowBean.getTaskId();
-		//		LeaveBill leaveBill = workflowService.findLeaveBillByTaskId(taskId);
-		//		ValueContext.putValueStack(leaveBill);
-		//		List<Comment> commentList = workflowService.findCommentByTaskId(taskId);
-		//		ValueContext.putValueContext("commentList", commentList);
 		return "taskForm";
 	}
 
@@ -207,19 +184,12 @@ public class WorkflowController  {
 		out.close();
 		in.close();
 		
+		
 	}
-	
-/*	public String viewTaskForm(){
-		//浠诲姟ID
-		String taskId = workflowBean.getTaskId();
-		String url = workflowService.findTaskFormKeyByTaskId(taskId);
-		url += "?taskId="+taskId;
-		//		ValueContext.putValueContext("url", url);
-		return "viewTaskForm";
-	}*/
 	
 	@RequestMapping(params="method=getStatus")
 	public String viewCurrentImage(String taskid,ModelMap modelMap){
+		
 		ProcessDefinition processDefinition=  workflowService.findProcessDefinitionByTaskId(taskid);
 		modelMap.addAttribute("deploymentId", processDefinition.getDeploymentId());
 		modelMap.addAttribute("imageName",processDefinition.getDiagramResourceName());
@@ -229,10 +199,22 @@ public class WorkflowController  {
 		modelMap.addAttribute("width",map.get("width"));
 		modelMap.addAttribute("height",map.get("height"));
 		return "image";
+		
 	}
 
 
+	@RequestMapping(params="method=getComment")
+	public @ResponseBody JsonData getComment(String ByClaimVoucherId,ModelMap modelMap){
+		
+		List<Comment> comments = workflowService.findCommentByClaimVoucherId(ByClaimVoucherId);
+		
+		JsonData jsonData = new JsonData();
+		jsonData.setRows(comments);
+		jsonData.setTotal(comments.size());
 
+		return jsonData;
+		
+	}
 
 
 }

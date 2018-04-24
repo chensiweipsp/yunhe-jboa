@@ -241,6 +241,25 @@ $(function() {
 							}
 						},
 						{
+							id : 'queryComment',
+							text : '查询报销单历史批注信息',
+							iconCls : 'icon-search',
+							handler : function() {
+								var rows = $('#table').datagrid(
+								'getSelections');
+								if (rows.length != 1) {
+									$.messager.alert('提示',
+									'请选中一条您要查看报销单的记录');
+
+
+								}else 
+								{
+									location.href="jsp/BizClaimVoucher/comment.jsp?ByClaimVoucherId="+rows[0].id+"";
+
+								}
+							}
+						},
+						{
 							id : 'gitStatus',
 							text : '查看报销单状态流程',
 							iconCls : 'icon-search',
@@ -452,5 +471,9 @@ $(function() {
 			$('#table').datagrid('clearSelections');
 		}
 	});
+	
+	
+	
+	
 
 });

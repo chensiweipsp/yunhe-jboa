@@ -135,6 +135,8 @@ $(function() {
 									$.messager.alert('提示',
 									'请选中一条您要审核的记录');
 								} else {
+									
+									
 									updatePerson();
 								}
 							}

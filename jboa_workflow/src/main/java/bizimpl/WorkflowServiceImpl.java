@@ -11,15 +11,14 @@ import java.util.zip.ZipInputStream;
 
 import javax.annotation.Resource;
 
-import org.activiti.bpmn.model.Artifact;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.Deployment;
@@ -30,7 +29,6 @@ import org.activiti.engine.task.Task;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 import dao.BizClaimVoucherDao;
 import entity.BizClaimVoucher;
@@ -139,6 +137,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					bizClaimVoucher.setTaskid(task4.getId());
 					break;
 				}
+				break;
 			}
 		}
 		else
@@ -158,6 +157,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 						bizClaimVoucher.setTaskid(task4.getId());
 						break;
 					}
+					break;
 
 				}
 			}
@@ -173,6 +173,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 						bizClaimVoucher.setTaskid(task4.getId());
 						break;
 					}
+					break;
+
 				}
 			}
 			else if(SecurityUtils.getSubject().hasRole("cashier"))
@@ -188,6 +190,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 						bizClaimVoucher.setTaskid(task4.getId());
 						break;
 					}
+					break;
+
 				}
 
 			}
@@ -204,6 +208,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 						bizClaimVoucher.setTaskid(task4.getId());
 						break;
 					}
+					break;
+
 				}
 
 			}
@@ -298,37 +304,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	public List<String> findOutComeListByTaskId(String taskId) {
 		//返回存放连线的名称集合
 		List<String> list = new ArrayList<String>();
-		/*	//1:使用任务ID，查询任务对象
-		Task task = taskService.createTaskQuery()//
-					.taskId(taskId)//使用任务ID查询
-					.singleResult();
-		//2：获取流程定义ID
-		String processDefinitionId = task.getProcessDefinitionId();
-		//3：查询ProcessDefinitionEntiy对象
-		ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processDefinitionId);
-		//使用任务对象Task获取流程实例ID
-		String processInstanceId = task.getProcessInstanceId();
-		//使用流程实例ID，查询正在执行的执行对象表，返回流程实例对象
-		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
-					.processInstanceId(processInstanceId)//使用流程实例ID查询
-					.singleResult();
-		//获取当前活动的id
-		String activityId = pi.getActivityId();
-		//4：获取当前的活动
-		ActivityImpl activityImpl = processDefinitionEntity.findActivity(activityId);
-		//5：获取当前活动完成之后连线的名称
-		List<PvmTransition> pvmList = activityImpl.getOutgoingTransitions();
-		if(pvmList!=null && pvmList.size()>0){
-			for(PvmTransition pvm:pvmList){
-				String name = (String) pvm.getProperty("name");
-				if(StringUtils.isNotBlank(name)){
-					list.add(name);
-				}
-				else{
-					list.add("默认提交");
-				}
-			}
-		}*/
 		return list;
 	}
 
@@ -368,8 +343,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			  所有需要从Session中获取当前登录人，作为该任务的办理人（审核人），对应act_hi_comment表中的User_ID的字段，不过不添加审核人，该字段为null
 			 所以要求，添加配置执行使用Authentication.setAuthenticatedUserId();添加当前任务的审核人
 		 * */
-		//		Authentication.setAuthenticatedUserId(SessionContext.get().getName());
-		taskService.addComment(taskId, processInstanceId, message);
+		taskService.addComment(taskId, processInstanceId, SecurityUtils.getSubject().getPrincipal().toString(),message);
 		/**
 		 * 2：如果连线的名称是“默认提交”，那么就不需要设置，如果不是，就需要设置流程变量
 		 * 在完成任务之前，设置流程变量，按照连线的名称，去完成任务
@@ -379,12 +353,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		Map<String, Object> variables = new HashMap<String,Object>();
 
 
-		/*	if(outcome!=null && !outcome.equals("staff")){
-
-			variables.put("role", outcome);
-
-
-		}*/
 
 		if(ispass.equals("no"))
 		{
@@ -453,22 +421,26 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			}
 		}
 		//3：使用任务ID，完成当前人的个人任务，同时流程变量
-		//		taskService.setAssignee(taskId, assignee);
 		taskService.complete(taskId, variables);
 		//4：当任务完成之后，需要指定下一个任务的办理人（使用类）-----已经开发完成
 		/**
 		 * 5：在完成任务之后，判断流程是否结束
    			如果流程结束了，更新请假单表的状态从1变成2（审核中-->审核完成）
 		 */
-		List<Task> task3 =findTaskListByName(assignee);
-		for (Task task4 : task3) {
-			bizClaimVoucher.setTaskid(task4.getId());
-			bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,task4.getId());
-			break;
-		}
-		
 
-		
+
+		if(null!=assignee)
+		{
+			List<Task> task3 =findTaskListByName(assignee);
+			for (Task task4 : task3) {
+				bizClaimVoucher.setTaskid(task4.getId());
+				bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,task4.getId());
+				break;
+			}
+		}
+
+
+
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
 				.processInstanceId(processInstanceId)//使用流程实例ID查询
 				.singleResult();
@@ -477,6 +449,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			//更新请假单表的状态从1变成2（审核中-->审核完成）
 			bizClaimVoucher.setStatus("已通过审核");
 			bizClaimVoucher.setSchedule(4);
+			bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,taskId);
 		}
 
 	}
@@ -492,38 +465,41 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		//获取流程实例ID
 		String processInstanceId = task.getProcessInstanceId();
 		//		//使用流程实例ID，查询历史任务，获取历史任务对应的每个任务ID
-		//		List<HistoricTaskInstance> htiList = historyService.createHistoricTaskInstanceQuery()//历史任务表查询
-		//						.processInstanceId(processInstanceId)//使用流程实例ID查询
-		//						.list();
-		//		//遍历集合，获取每个任务ID
-		//		if(htiList!=null && htiList.size()>0){
-		//			for(HistoricTaskInstance hti:htiList){
-		//				//任务ID
-		//				String htaskId = hti.getId();
-		//				//获取批注信息
-		//				List<Comment> taskList = taskService.getTaskComments(htaskId);//对用历史完成后的任务ID
-		//				list.addAll(taskList);
-		//			}
-		//		}
+		List<HistoricTaskInstance> htiList = historyService.createHistoricTaskInstanceQuery()//历史任务表查询
+				.processInstanceId(processInstanceId)//使用流程实例ID查询
+				.list();
+		//遍历集合，获取每个任务ID
+		if(htiList!=null && htiList.size()>0){
+			
+			for(HistoricTaskInstance hti:htiList){
+				//任务ID
+				String htaskId = hti.getId();
+				//获取批注信息
+				List<Comment> taskList = taskService.getTaskComments(htaskId);//对用历史完成后的任务ID
+				list.addAll(taskList);
+			}
+			
+		}
 		list = taskService.getProcessInstanceComments(processInstanceId);
 		return list;
 	}
+	
 	/**使用请假单ID，查询历史批注信息*/
-	/*public List<Comment> findCommentByLeaveBillId(Long id) {
+	public List<Comment> findCommentByClaimVoucherId(String id) {
 		//使用请假单ID，查询请假单对象
-		LeaveBill leaveBill = leaveBillDao.findLeaveBillById(id);
+		BizClaimVoucher bizClaimVoucher = bizClaimVoucherDao.findByID(id);
 		//获取对象的名称
-		String objectName = leaveBill.getClass().getSimpleName();
+		String objectName = bizClaimVoucher.getClass().getSimpleName();
 		//组织流程表中的字段中的值
 		String objId = objectName+"."+id;
 
-	 *//**1:使用历史的流程实例查询，返回历史的流程实例对象，获取流程实例ID*//*
+	 /**1:使用历史的流程实例查询，返回历史的流程实例对象，获取流程实例ID*/
 //		HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery()//对应历史的流程实例表
 //						.processInstanceBusinessKey(objId)//使用BusinessKey字段查询
 //						.singleResult();
 //		//流程实例ID
 //		String processInstanceId = hpi.getId();
-	  *//**2:使用历史的流程变量查询，返回历史的流程变量的对象，获取流程实例ID*//*
+	  /**2:使用历史的流程变量查询，返回历史的流程变量的对象，获取流程实例ID*/
 		HistoricVariableInstance hvi = historyService.createHistoricVariableInstanceQuery()//对应历史的流程变量表
 						.variableValueEquals("objId", objId)//使用流程变量的名称和流程变量的值查询
 						.singleResult();
@@ -531,7 +507,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		String processInstanceId = hvi.getProcessInstanceId();
 		List<Comment> list = taskService.getProcessInstanceComments(processInstanceId);
 		return list;
-	}*/
+	}
 
 	/**1：获取任务ID，获取任务对象，使用任务对象获取流程定义ID，查询流程定义对象*/
 

@@ -66,6 +66,7 @@
 					<td><input id="updatecreateSn" 
 						name="createSn" /></td>
 				</tr>
+				
 				<shior:lacksRole name="generalmanager">
 				<tr>
 					<td>待处理人:</td>
@@ -78,6 +79,11 @@
 					</select></td>
 				</tr>
 				</shior:lacksRole>
+				
+				
+				
+				
+				
 				<tr>
 					<td>填写时间:</td>
 					<td><input disabled="disabled" class="easyui-datebox"
