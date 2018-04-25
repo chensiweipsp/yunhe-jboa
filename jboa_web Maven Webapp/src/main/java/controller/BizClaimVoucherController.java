@@ -159,12 +159,15 @@ public class BizClaimVoucherController {
 		String event=request.getParameter("event");
 		String totalAccount=request.getParameter("totalAccount");
 		String status=request.getParameter("status");
+		String taskid=request.getParameter("taskid");
+
 		bizClaimVoucher.setCreateSn(new SysEmployee(Integer.parseInt(createSn)));
 		bizClaimVoucher.setNextDealSn(new SysEmployee(Integer.parseInt(nextDealSn)));
 		bizClaimVoucher.setCreateTime(new SimpleDateFormat("MM/dd/yyyy").parse(createTime));
 		bizClaimVoucher.setEvent(event);
 		bizClaimVoucher.setTotalAccount(new Double(totalAccount));
 		bizClaimVoucher.setStatus(status);
+		bizClaimVoucher.setTaskid(taskid);
 		bizClaimVoucherBiz.SaveOrUpdateClaimVouchers(bizClaimVoucher);
 
 

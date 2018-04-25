@@ -97,21 +97,22 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 
 	/**更新请假状态，启动流程实例，让启动的流程实例关联业务*/
 
-	public void saveStartProcess(String saveorupdate,String ename,String nextDeal,String key,String id) {
+	public void saveStartProcess(String saveorupdate,String ename,String nextDeal,String key,String id,String taskid) {
 		Map<String, Object> variables = new HashMap<String,Object>();
-		variables.put("inputUser", ename);//表示惟一用户
-		String objId = key+"."+id;
-		variables.put("objId", objId);
-		runtimeService.startProcessInstanceByKey(key,objId,variables);
 		Map<String, Object> variables2 = new HashMap<String,Object>();
-		List<Task> task =findTaskListByName(ename);
-
 		BizClaimVoucher bizClaimVoucher= bizClaimVoucherDao.findByID(id);
 
 
 		if(saveorupdate.equals("save"))
 		{
 			//添加
+			variables.put("inputUser", ename);//表示惟一用户
+			String objId = key+"."+id;
+			variables.put("objId", objId);
+			runtimeService.startProcessInstanceByKey(key,objId,variables);
+			List<Task> task =findTaskListByName(ename);
+			
+			
 			if(SecurityUtils.getSubject().hasRole("manager"))
 			{
 				variables2.put("role", "manager");
@@ -142,76 +143,12 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		}
 		else
 		{
-
-
 			//修改
-			if(SecurityUtils.getSubject().hasRole("staff"))
-			{
-				variables2.put("role", "staff");
-				task =findTaskListByName(ename);
-
-				for (Task task2 : task) {
-					taskService.complete(task2.getId(), variables2);
-					List<Task> task3 =findTaskListByName(nextDeal);
-					for (Task task4 : task3) {
-						bizClaimVoucher.setTaskid(task4.getId());
-						break;
-					}
-					break;
-
-				}
-			}
-			else if(SecurityUtils.getSubject().hasRole("manager"))
-			{
-				variables2.put("rollback", "no");
-				task =findTaskListByName(ename);
-
-				for (Task task2 : task) {
-					taskService.complete(task2.getId(), variables2);
-					List<Task> task3 =findTaskListByName(nextDeal);
-					for (Task task4 : task3) {
-						bizClaimVoucher.setTaskid(task4.getId());
-						break;
-					}
-					break;
-
-				}
-			}
-			else if(SecurityUtils.getSubject().hasRole("cashier"))
-			{
-
-				variables2.put("createmp", "default");
-				task =findTaskListByName(ename);
-
-				for (Task task2 : task) {
-					taskService.complete(task2.getId(), variables2);
-					List<Task> task3 =findTaskListByName(nextDeal);
-					for (Task task4 : task3) {
-						bizClaimVoucher.setTaskid(task4.getId());
-						break;
-					}
-					break;
-
-				}
-
-			}
-			else if(SecurityUtils.getSubject().hasRole("generalmanager"))
-			{
-
-				variables2.put("rollback", "no");
-				task =findTaskListByName(ename);
-
-				for (Task task2 : task) {
-					taskService.complete(task2.getId(), variables2);
-					List<Task> task3 =findTaskListByName(nextDeal);
-					for (Task task4 : task3) {
-						bizClaimVoucher.setTaskid(task4.getId());
-						break;
-					}
-					break;
-
-				}
-
+			taskService.setAssignee(taskid, nextDeal);
+			List<Task> task3 =findTaskListByName(nextDeal);
+			for (Task task4 : task3) {
+				bizClaimVoucher.setTaskid(task4.getId());
+				break;
 			}
 		}
 

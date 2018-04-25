@@ -160,6 +160,10 @@ $(function() {
 								if (rows.length != 1) {
 									$.messager.alert('提示',
 									'请选中一条您要修改的记录');
+								}else if(rows[0].status!="新创建")
+								{
+									$.messager.alert('提示',
+									'该报销单已经在审核中');
 								} else {
 									updatePerson();
 								}
@@ -465,7 +469,8 @@ $(function() {
 					createTime : $("#updatecreateTime").val(),
 					totalAccount : $("#updatetotalAccount").val(),
 					status : $("#updatestatus").val(),
-					event : $("#updateevent").val()
+					event : $("#updateevent").val(),
+					taskid:$("#taskid").val()
 				}
 			});
 			$('#table').datagrid('clearSelections');

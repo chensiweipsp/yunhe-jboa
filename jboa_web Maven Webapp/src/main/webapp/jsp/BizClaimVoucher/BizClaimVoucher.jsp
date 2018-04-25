@@ -59,7 +59,7 @@
 							<option value="${sessionScope.sysEmploye.sn}">${sessionScope.sysEmploye.name}</option>
 					</select></td>
 				</tr>
-				
+
 				<tr>
 					<td>待处理人:</td>
 					<td><select name="nextDealSn">
@@ -111,6 +111,10 @@
 				<tr style="display: none;">
 					<td>填报人:</td>
 					<td><input id="updatecreateSn" name="createSn" /></td>
+				</tr>
+				<tr style="display: none;">
+					<td>taskid:</td>
+					<td><input id="taskid" name="taskid" /></td>
 				</tr>
 				<tr>
 					<td>待处理人:</td>

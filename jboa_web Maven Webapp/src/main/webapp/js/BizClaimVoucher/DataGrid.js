@@ -156,7 +156,11 @@ $(function() {
 								if (rows.length != 1) {
 									$.messager.alert('提示',
 									'请选中一条您要修改的记录');
-								} else {
+								}else if(rows[0].status!="新创建")
+								{
+									$.messager.alert('提示',
+									'该报销单已经在审核中');
+								}else {
 									updatePerson();
 								}
 							}
@@ -190,22 +194,22 @@ $(function() {
 											},
 											function(result) {
 												var options = $(
-														'#table')
-														.datagrid(
-														'getPager')
-														.data(
-														"pagination").options;
+												'#table')
+												.datagrid(
+												'getPager')
+												.data(
+												"pagination").options;
 												var currentPageNumber = options.pageNumber;
 												var rowSize = $(
-														'#table')
-														.datagrid(
-														'getRows').length;
+												'#table')
+												.datagrid(
+												'getRows').length;
 												if (currentPageNumber != 1
 														&& rowSize == rows.length) {
 													var queryParams = $(
-															'#table')
-															.datagrid(
-															'options').queryParams;
+													'#table')
+													.datagrid(
+													'options').queryParams;
 													queryParams.previous = 'true';
 													$(
 													'#table')
@@ -214,15 +218,15 @@ $(function() {
 													queryParams.previous = '';
 												} else {
 													$(
-															'#table')
-															.datagrid(
-															'reload');
+													'#table')
+													.datagrid(
+													'reload');
 												}
 											});
 								}
 							}
 						},
-						
+
 						{
 							id : 'search',
 							text : '全部数据',

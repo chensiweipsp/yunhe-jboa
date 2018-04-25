@@ -111,7 +111,8 @@ function updatePerson() {
 				createTime : dispalyformatterdate(rows[0].createTime),
 				event : rows[0].event,
 				totalAccount : rows[0].totalAccount,
-				status : rows[0].status
+				status : rows[0].status,
+				taskid:rows[0].taskid
 			});
 		}
 	,

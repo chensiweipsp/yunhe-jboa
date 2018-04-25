@@ -1,8 +1,6 @@
 package aop;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -69,7 +66,7 @@ public class BizClaimVoucherAop {
 
 		System.err.println(session.getAttribute("createSn"));
 		try {
-			IWorkflowService.saveStartProcess(saveorupdate,createEmp, nextDeal,key, id);
+			IWorkflowService.saveStartProcess(saveorupdate,createEmp, nextDeal,key, id,bizClaimVoucher.getTaskid());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
