@@ -88,8 +88,10 @@ public class BizClaimVoucherController {
 			page = page - 1; 
 		} 
 		JsonData jsonData = new JsonData();
-		jsonData.setTotal(bizClaimVoucherBiz.getClaimVoucherCount(createSn, nextDeal, "", sysEmployee,  true));
 		jsonData.setRows(bizClaimVoucherBiz.getClaimVouchers(createSn, nextDeal, "", page, rows, sysEmployee,  true));
+		jsonData.setTotal(bizClaimVoucherBiz.getClaimVoucherCount(createSn, nextDeal, "", sysEmployee,  true));
+		
+		
 		return jsonData;
 	}
 	

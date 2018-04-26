@@ -145,6 +145,7 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 			SysEmployee sEmployee, 
 			Boolean isLookThrough) {
 		StringBuilder stringBuilder = new StringBuilder(" from BizClaimVoucher as bv  where 1=1 ");
+		
 		//如果为true则为 审核
 		if(isLookThrough==false)
 		{
@@ -183,7 +184,9 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		{
 			stringBuilder.append("and bv.nextDealSn.sn="+sEmployee.getSn()+"");;			
 		}
+		
 		return bizClaimVoucherDao.getClaimVouchers(page, rows, stringBuilder.toString(), isLookThrough);
+		
 	}
 	
 	public List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
