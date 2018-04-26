@@ -1,2 +1,0 @@
-1.Default sequenceflow has a condition, which is not allowed （ 默认sequenceflow是有条件的，这是不允许的 ）
-网关的默认的连线 不可以在CONDITION中包含EL表达式 
