@@ -1,7 +1,9 @@
 package redisaop;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.aopalliance.intercept.MethodInterceptor;
@@ -17,7 +19,7 @@ import entity.BizClaimVoucher;
 
 @Aspect
 @Component
-public class ServicAop implements MethodInterceptor {
+public class BizClaimVoucherServicAop implements MethodInterceptor {
 
 
 
@@ -25,32 +27,29 @@ public class ServicAop implements MethodInterceptor {
 
 
 	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.getClaimVouchers(..))")
-	public Object send(ProceedingJoinPoint joinPoint)
+	public Object getClaimVouchersCache(ProceedingJoinPoint joinPoint)
 	{
 
 		Object object[]=	joinPoint.getArgs();
 
 		//获取类名
-		String classname=joinPoint.getClass().getName();
+		String classname=joinPoint.getTarget().toString();
 		//获取方法名 
 		String method = joinPoint.getSignature().getName();
 		//获取页码
 		int page=(Integer) object[3];
 		//获取条数
 		int pagenum=(Integer) object[4];
-
-		
 		StringBuilder key = new StringBuilder();
 		key.append(classname+"_"+method+"_"+"pagesize="+page+"_pagenum="+pagenum+"");
-
- 
+		List<BizClaimVoucher> bizClaimVouchers = new ArrayList<>();
 		try {
 			// 判断是否有缓存
 			if (exists(key.toString())) {
 				return getCache(key.toString());
 			}
 			// 写入缓存并贯穿持久层
-			List<BizClaimVoucher> bizClaimVouchers = (List<BizClaimVoucher>) joinPoint.proceed();
+			bizClaimVouchers = (List<BizClaimVoucher>) joinPoint.proceed();
 			
 			if (bizClaimVouchers != null) {
 				final String tkey = key.toString();
@@ -64,19 +63,69 @@ public class ServicAop implements MethodInterceptor {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+		return bizClaimVouchers;
+	}
+
+	
+	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.getClaimVoucherCount(..))")
+	public Object getClaimVoucherCountCache(ProceedingJoinPoint joinPoint)
+	{
+		Object object[]=	joinPoint.getArgs();
+		//获取类名
+		String classname=joinPoint.getTarget().toString();
+		//获取方法名 
+		String method = joinPoint.getSignature().getName();
+		StringBuilder key = new StringBuilder();
+		key.append(classname+"_"+method+"");
+		int count=0;
+		try {
+			// 判断是否有缓存
+			if (exists(key.toString())) {
+				return getCache(key.toString());
+			}
+			// 写入缓存并贯穿持久层
+			  count = (Integer) joinPoint.proceed();
+			
+			if (count != 0) {
+				final String tkey = key.toString();
+				final Object value = count;
+				new Thread(new Runnable() {
+					public void run() {
+						setCache(tkey, value, defaultCacheExpireTime);
+					}
+				}).start();
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
 
 
-		return joinPoint;
+
+	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.SaveOrUpdateClaimVouchers(..))")
+	public Object SaveOrUpdateClaimVouchersClearCache(ProceedingJoinPoint joinPoint)
+	{
+		
+		String key ="bizimpl.BizClaimVoucherBizImpl";
+		Object result = null;
+		try {
+			result = joinPoint.proceed();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//清除缓存
+		clearCache(key);
+		
+		return result;
 	}
 
 
 
 
-
-
-
 	private RedisTemplate<Serializable, Object> redisTemplate;
-	private Long defaultCacheExpireTime = 10l; // 缓存默认的过期时间,这里设置了10秒
+	private Long defaultCacheExpireTime = 10000l; // 缓存默认的过期时间,这里设置了10秒
 
 
 	/**
@@ -125,6 +174,21 @@ public class ServicAop implements MethodInterceptor {
 	}
 
 
+	
+	public boolean clearCache(String className) {
+		boolean result = false;
+		try {
+			
+			Set<Serializable> keys = redisTemplate.keys(className+"*");			
+            redisTemplate.delete(keys);	
+            result = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	
 
 	/**
 	 * 写入缓存
@@ -146,6 +210,7 @@ public class ServicAop implements MethodInterceptor {
 		}
 		return result;
 	}
+	
 
 	public void setRedisTemplate(
 			RedisTemplate<Serializable, Object> redisTemplate) {

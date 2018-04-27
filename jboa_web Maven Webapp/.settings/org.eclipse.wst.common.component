@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="jboa_web Maven Webapp">
+    <wb-module deploy-name="jboa_web">
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <dependent-module archiveName="jboa_service-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jboa_service/jboa_service">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -15,7 +16,10 @@
         <dependent-module archiveName="jboa_workflow-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jboa_workflow/jboa_workflow">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <property name="context-root" value="/jboa_web"/>
+        <dependent-module archiveName="jboa_redis-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jboa_redis/jboa_redis">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/jboa_web Maven Webapp/src/main/webapp/src/main/resources"/>
+        <property name="context-root" value="jboa_web"/>
     </wb-module>
 </project-modules>
