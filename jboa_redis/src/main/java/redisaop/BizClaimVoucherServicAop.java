@@ -23,9 +23,6 @@ public class BizClaimVoucherServicAop implements MethodInterceptor {
 
 
 
-
-
-
 	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.getClaimVouchers(..))")
 	public Object getClaimVouchersCache(ProceedingJoinPoint joinPoint)
 	{
@@ -122,6 +119,38 @@ public class BizClaimVoucherServicAop implements MethodInterceptor {
 	}
 
 
+	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.ispass(..))")
+	public Object ispaddClearCache(ProceedingJoinPoint joinPoint)
+	{
+		
+		String key ="bizimpl.BizClaimVoucherBizImpl";
+		Object result = null;
+		try {
+			result = joinPoint.proceed();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//清除缓存
+		clearCache(key);
+		return result;
+	}
+	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.deleteClaimVouchers(..))")
+	public Object deleteClaimVouchersClearCache(ProceedingJoinPoint joinPoint)
+	{
+		
+		String key ="bizimpl.BizClaimVoucherBizImpl";
+		Object result = null;
+		try {
+			result = joinPoint.proceed();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//清除缓存
+		clearCache(key);
+		return result;
+	}
 
 
 	private RedisTemplate<Serializable, Object> redisTemplate;

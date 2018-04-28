@@ -39,6 +39,7 @@ public class BizClaimVoucherAop {
 		Object[] objects=	joinPoint.getArgs();
 
 		BizClaimVoucher bizClaimVoucher= (BizClaimVoucher) objects[0];
+		
 		String saveorupdate =null!=bizClaimVoucher.getId()?"update":"save";
 
 		BizClaimVoucher result = null;
@@ -71,9 +72,7 @@ public class BizClaimVoucherAop {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		Object resurlt=null;
-
 		return resurlt;
 	}
 

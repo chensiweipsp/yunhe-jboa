@@ -200,9 +200,6 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 
 				session.save(bizCheckResult);
 
-
-
-
 			}
 			else if(SecurityUtils.getSubject().hasRole("cashier"))
 			{
