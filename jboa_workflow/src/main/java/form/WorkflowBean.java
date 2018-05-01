@@ -22,6 +22,7 @@ public class WorkflowBean {
 	
 	private String comment;		//备注
 	private String assignee;  //代办人
+	private String createEmp;
 	private List<String> createEmpRolNames;  //创建人角色权限
 
 	
@@ -96,6 +97,12 @@ public class WorkflowBean {
 	}
 	public void setIspass(String ispass) {
 		this.ispass = ispass;
+	}
+	public String getCreateEmp() {
+		return createEmp;
+	}
+	public void setCreateEmp(String createEmp) {
+		this.createEmp = createEmp;
 	}
 	
 	

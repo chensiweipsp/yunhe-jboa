@@ -23,7 +23,7 @@ public class ManagerTaskHandler implements TaskListener {
 	private HttpSession session;  
 	public void notify(DelegateTask delegateTask) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-		delegateTask.setAssignee((String) request.getSession().getAttribute("nextEmp"));
+		delegateTask.setAssignee((String) request.getSession().getAttribute("Assignee"));
 		
 		
 	}

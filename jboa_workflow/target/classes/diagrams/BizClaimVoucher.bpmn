@@ -45,10 +45,10 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${role=='cashier'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow21" name="财务审核总经理" sourceRef="usertask4" targetRef="endevent1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${createmp=='generalmanager'}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rollback=='pass'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow22" sourceRef="usertask4" targetRef="usertask5">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${createmp=='default'}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rollback=='no'}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_BizClaimVoucher">
@@ -146,7 +146,7 @@
         <omgdi:waypoint x="967.0" y="481.0"></omgdi:waypoint>
         <omgdi:waypoint x="967.0" y="302.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="84.0" x="596.0" y="459.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="100.0" x="596.0" y="459.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">

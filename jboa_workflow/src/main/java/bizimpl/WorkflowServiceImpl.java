@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
-
 import javax.annotation.Resource;
-
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -29,15 +27,12 @@ import org.activiti.engine.task.Task;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
-
 import dao.BizClaimVoucherDao;
 import entity.BizClaimVoucher;
 import form.WorkflowBean;
-
 @Service("workflowService")
 public class WorkflowServiceImpl implements biz.IWorkflowService {
 	/**请假申请Dao*/
-
 	@Resource(name="repositoryService")
 	private RepositoryService repositoryService;
 	@Resource(name="runtimeService")
@@ -50,7 +45,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	private HistoryService historyService;
 	@Resource(name="bizClaimVoucherDao")
 	BizClaimVoucherDao bizClaimVoucherDao;
-
 	/**部署流程定义*/
 	public void saveNewDeploye(File file, String filename) {
 		try {
@@ -111,8 +105,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			variables.put("objId", objId);
 			runtimeService.startProcessInstanceByKey(key,objId,variables);
 			List<Task> task =findTaskListByName(ename);
-			
-			
+
+
 			if(SecurityUtils.getSubject().hasRole("manager"))
 			{
 				variables2.put("role", "manager");
@@ -260,6 +254,9 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		String auditorRolename= workflowBean.getAuditorRolename();
 		//获取 是否通过
 		String ispass = workflowBean.getIspass();
+		//获取填报人
+		String creatEmp=workflowBean.getCreateEmp();
+
 
 		BizClaimVoucher bizClaimVoucher = bizClaimVoucherDao.findByID(id.toString());
 
@@ -310,55 +307,52 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				variables.put("rollback", "cashier");
 				bizClaimVoucher.setStatus("财务回拒");
 			}
+
+			taskService.complete(taskId, variables);
+			if(null!=creatEmp)
+			{
+				System.err.println(SecurityUtils.getSubject().getPrincipal().toString());
+				List<Task> task3 =findTaskListByName(creatEmp);
+				for (Task task4 : task3) {
+					bizClaimVoucher.setTaskid(task4.getId());
+					bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,task4.getId());
+					break;
+				}
+			}
+
 		}
 		else
 		{
 
-			if(SecurityUtils.getSubject().hasRole("manager"))
-			{
-				variables.put("role", "manager");
-				bizClaimVoucher.setSchedule(2);
 
+			List<String> roles=	workflowBean.getCreateEmpRolNames();
+			for (String string : roles) {
+				if(string.equals("generalmanager")) {
+					variables.put("rollback", "pass");
+				}
+				else
+				{
+					variables.put("rollback", "no");
+					bizClaimVoucher.setStatus("待通过");
+				}
 			}
-			else if(SecurityUtils.getSubject().hasRole("generalmanager"))
+			
+
+			taskService.complete(taskId, variables);
+
+			if(null!=assignee)
 			{
-
-				variables.put("role", "generalmanager");
-				bizClaimVoucher.setSchedule(4);
-
+				List<Task> task3 =findTaskListByName(assignee);
+				for (Task task4 : task3) {
+					bizClaimVoucher.setTaskid(task4.getId());
+					bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,task4.getId());
+					break;
+				}
 			}
-			else if(SecurityUtils.getSubject().hasRole("cashier"))
-			{
-
-				variables.put("role", "cashier");
-				bizClaimVoucher.setSchedule(3);
-
-
-			}
-			else if(SecurityUtils.getSubject().hasRole("staff"))
-			{
-
-				variables.put("role", "staff");
-				bizClaimVoucher.setSchedule(1);
-
-			}
-			variables.put("rollback", "no");
-			bizClaimVoucher.setStatus("待通过");
 		}
 
 
-		List<String> roles=	workflowBean.getCreateEmpRolNames();
-		for (String string : roles) {
-			if(string.equals("generalmanager")) {
-				variables.put("createmp", "generalmanager");
-			}
-			else
-			{
-				variables.put("createmp", "default");
-			}
-		}
 		//3：使用任务ID，完成当前人的个人任务，同时流程变量
-		taskService.complete(taskId, variables);
 		//4：当任务完成之后，需要指定下一个任务的办理人（使用类）-----已经开发完成
 		/**
 		 * 5：在完成任务之后，判断流程是否结束
@@ -366,21 +360,12 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		 */
 
 
-		if(null!=assignee)
-		{
-			List<Task> task3 =findTaskListByName(assignee);
-			for (Task task4 : task3) {
-				bizClaimVoucher.setTaskid(task4.getId());
-				bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,task4.getId());
-				break;
-			}
-		}
-
 
 
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
 				.processInstanceId(processInstanceId)//使用流程实例ID查询
 				.singleResult();
+
 		//流程结束了
 		if(pi==null){
 			//更新请假单表的状态从1变成2（审核中-->审核完成）
@@ -407,7 +392,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				.list();
 		//遍历集合，获取每个任务ID
 		if(htiList!=null && htiList.size()>0){
-			
+
 			for(HistoricTaskInstance hti:htiList){
 				//任务ID
 				String htaskId = hti.getId();
@@ -415,12 +400,12 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				List<Comment> taskList = taskService.getTaskComments(htaskId);//对用历史完成后的任务ID
 				list.addAll(taskList);
 			}
-			
+
 		}
 		list = taskService.getProcessInstanceComments(processInstanceId);
 		return list;
 	}
-	
+
 	/**使用请假单ID，查询历史批注信息*/
 	public List<Comment> findCommentByClaimVoucherId(String id) {
 		//使用请假单ID，查询请假单对象
@@ -430,16 +415,16 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		//组织流程表中的字段中的值
 		String objId = objectName+"."+id;
 
-	 /**1:使用历史的流程实例查询，返回历史的流程实例对象，获取流程实例ID*/
-//		HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery()//对应历史的流程实例表
-//						.processInstanceBusinessKey(objId)//使用BusinessKey字段查询
-//						.singleResult();
-//		//流程实例ID
-//		String processInstanceId = hpi.getId();
-	  /**2:使用历史的流程变量查询，返回历史的流程变量的对象，获取流程实例ID*/
+		/**1:使用历史的流程实例查询，返回历史的流程实例对象，获取流程实例ID*/
+		//		HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery()//对应历史的流程实例表
+		//						.processInstanceBusinessKey(objId)//使用BusinessKey字段查询
+		//						.singleResult();
+		//		//流程实例ID
+		//		String processInstanceId = hpi.getId();
+		/**2:使用历史的流程变量查询，返回历史的流程变量的对象，获取流程实例ID*/
 		HistoricVariableInstance hvi = historyService.createHistoricVariableInstanceQuery()//对应历史的流程变量表
-						.variableValueEquals("objId", objId)//使用流程变量的名称和流程变量的值查询
-						.singleResult();
+				.variableValueEquals("objId", objId)//使用流程变量的名称和流程变量的值查询
+				.singleResult();
 		//流程实例ID
 		String processInstanceId = hvi.getProcessInstanceId();
 		List<Comment> list = taskService.getProcessInstanceComments(processInstanceId);
@@ -495,10 +480,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		map.put("height", activityImpl.getHeight());
 		return map;
 	}
-
 	public List<Comment> findCommentByLeaveBillId(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

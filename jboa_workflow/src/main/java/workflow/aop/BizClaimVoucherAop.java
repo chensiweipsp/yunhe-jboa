@@ -63,7 +63,7 @@ public class BizClaimVoucherAop {
 		bizClaimVoucher= bizClaimVoucherDao.findByID(String.valueOf(id));
 
 
-		session.setAttribute("nextEmp", nextDeal);
+		session.setAttribute("Assignee", nextDeal);
 
 		System.err.println(session.getAttribute("createSn"));
 		try {
@@ -151,11 +151,19 @@ public class BizClaimVoucherAop {
 
 		SysEmployee nextEmp=	sysEmployeeDao.findUserByUserSn(Integer.parseInt(null==nextDealSn?createSn:nextDealSn));
 
-		session.setAttribute("nextEmp", nextEmp.getName());
-
 
 		SysEmployee createEmp=	sysEmployeeDao.findUserByUserSn(Integer.parseInt(createSn));
 
+		if(ispass.equals("no"))
+		{
+			session.setAttribute("Assignee", createEmp.getName());
+
+		}else
+		{
+			session.setAttribute("Assignee", nextEmp.getName());
+			
+		}
+		
 
 
 		List<String> roles = new ArrayList<String>();
@@ -173,6 +181,7 @@ public class BizClaimVoucherAop {
 		workflowBean.setCreateEmpRolNames(roles);
 		workflowBean.setAuditorRolename(auditorRolename);
 		workflowBean.setIspass(ispass);
+		workflowBean.setCreateEmp(createEmp.getName());
 		IWorkflowService.saveSubmitTask(workflowBean);
 
 
