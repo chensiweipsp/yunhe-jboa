@@ -378,7 +378,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	/**获取批注信息，传递的是当前任务ID，获取历史任务ID对应的批注*/
 
 	public List<Comment> findCommentByTaskId(String taskId) {
-		List<Comment> list = new ArrayList<Comment>();
 		//使用当前的任务ID，查询当前流程对应的历史任务ID
 		//使用当前任务ID，获取当前任务对象
 		Task task = taskService.createTaskQuery()//
@@ -386,23 +385,9 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				.singleResult();
 		//获取流程实例ID
 		String processInstanceId = task.getProcessInstanceId();
-		//		//使用流程实例ID，查询历史任务，获取历史任务对应的每个任务ID
-		List<HistoricTaskInstance> htiList = historyService.createHistoricTaskInstanceQuery()//历史任务表查询
-				.processInstanceId(processInstanceId)//使用流程实例ID查询
-				.list();
-		//遍历集合，获取每个任务ID
-		if(htiList!=null && htiList.size()>0){
-
-			for(HistoricTaskInstance hti:htiList){
-				//任务ID
-				String htaskId = hti.getId();
-				//获取批注信息
-				List<Comment> taskList = taskService.getTaskComments(htaskId);//对用历史完成后的任务ID
-				list.addAll(taskList);
-			}
-
-		}
-		list = taskService.getProcessInstanceComments(processInstanceId);
+		
+		List<Comment> list= taskService.getProcessInstanceComments(processInstanceId);
+		
 		return list;
 	}
 
