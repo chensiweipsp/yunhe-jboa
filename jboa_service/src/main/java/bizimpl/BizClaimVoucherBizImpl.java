@@ -133,7 +133,7 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		}
 		else
 		{
-			stringBuilder.append("and bv.nextDealSn.sn="+sEmploye.getSn()+"");;			
+			stringBuilder.append("and bv.nextDealSn.sn="+sEmploye.getSn()+" and bv.createSn.sn!="+sEmploye.getSn()+"");;			
 		}
 		
 		return bizClaimVoucherDao.getClaimVoucherCount(stringBuilder.toString(), isLookThrough);
@@ -182,7 +182,8 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		}
 		else
 		{
-			stringBuilder.append("and bv.nextDealSn.sn="+sEmployee.getSn()+"");;			
+			stringBuilder.append("and bv.nextDealSn.sn="+sEmployee.getSn()+" and bv.createSn.sn!="+sEmployee.getSn()+"");;			
+
 		}
 		
 		return bizClaimVoucherDao.getClaimVouchers(page, rows, stringBuilder.toString(), isLookThrough);
