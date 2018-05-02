@@ -257,6 +257,7 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 				else {
 					bizclaimvouyearstatistics.setTotalCount(bizclaimvouyearstatistics.getTotalCount()+bizClaimVoucher.getTotalAccount());
 				}
+				
 			}
 
 		} catch (Exception e) {
