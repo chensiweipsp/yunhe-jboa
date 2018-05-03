@@ -37,14 +37,18 @@ public class BizClaimVoucherServicAop implements MethodInterceptor {
 		int page=(Integer) object[3];
 		//获取条数
 		int pagenum=(Integer) object[4];
+		
+		Boolean isLookThrough =(Boolean) object[6];
+
 		StringBuilder key = new StringBuilder();
 		key.append(classname+"_"+method+"_"+"pagesize="+page+"_pagenum="+pagenum+"");
 		List<BizClaimVoucher> bizClaimVouchers = new ArrayList<>();
 		try {
 			// 判断是否有缓存
-			if (exists(key.toString())) {
+			if (exists(key.toString())&&!isLookThrough ) {
 				return getCache(key.toString());
 			}
+			
 			// 写入缓存并贯穿持久层
 			bizClaimVouchers = (List<BizClaimVoucher>) joinPoint.proceed();
 			
@@ -72,12 +76,16 @@ public class BizClaimVoucherServicAop implements MethodInterceptor {
 		String classname=joinPoint.getTarget().toString();
 		//获取方法名 
 		String method = joinPoint.getSignature().getName();
+		
+		Boolean isLookThrough =(Boolean) object[4];
+
+		
 		StringBuilder key = new StringBuilder();
 		key.append(classname+"_"+method+"");
 		int count=0;
 		try {
 			// 判断是否有缓存
-			if (exists(key.toString())) {
+			if (exists(key.toString())&&!isLookThrough) {
 				return getCache(key.toString());
 			}
 			// 写入缓存并贯穿持久层
@@ -103,7 +111,6 @@ public class BizClaimVoucherServicAop implements MethodInterceptor {
 	@Around("execution(* bizimpl.BizClaimVoucherBizImpl.SaveOrUpdateClaimVouchers(..))")
 	public Object SaveOrUpdateClaimVouchersClearCache(ProceedingJoinPoint joinPoint)
 	{
-		
 		String key ="bizimpl.BizClaimVoucherBizImpl";
 		Object result = null;
 		try {
