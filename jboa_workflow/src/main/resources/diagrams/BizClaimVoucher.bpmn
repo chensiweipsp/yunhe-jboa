@@ -4,32 +4,20 @@
     <startEvent id="startevent1" name="Start"></startEvent>
     <userTask id="usertask1" name="提交申请" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action"></userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
-    <userTask id="usertask3" name="部门经理审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action">
-      <extensionElements>
-        <activiti:taskListener event="create" class="utils.ManagerTaskHandler"></activiti:taskListener>
-      </extensionElements>
-    </userTask>
-    <userTask id="usertask4" name="财务审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action">
-      <extensionElements>
-        <activiti:taskListener event="create" class="utils.ManagerTaskHandler"></activiti:taskListener>
-      </extensionElements>
-    </userTask>
+    <userTask id="usertask3" name="部门经理审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action"></userTask>
+    <userTask id="usertask4" name="财务审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action"></userTask>
     <sequenceFlow id="flow5" sourceRef="usertask3" targetRef="usertask4">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rollback=='no'}]]></conditionExpression>
     </sequenceFlow>
-    <userTask id="usertask5" name="总经理审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action">
-      <extensionElements>
-        <activiti:taskListener event="create" class="utils.ManagerTaskHandler"></activiti:taskListener>
-      </extensionElements>
-    </userTask>
+    <userTask id="usertask5" name="总经理审批" activiti:assignee="${inputUser}" activiti:formKey="workflowAction_audit.action"></userTask>
     <endEvent id="endevent1" name="End"></endEvent>
-    <sequenceFlow id="flow17" name="财务经理回拒" sourceRef="usertask4" targetRef="usertask1">
+    <sequenceFlow id="flow17" name="财务经理回拒" sourceRef="usertask4" targetRef="startevent1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rollback=='cashier'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="总经理回拒" name="总经理回拒" sourceRef="usertask5" targetRef="usertask1">
+    <sequenceFlow id="总经理回拒" name="总经理回拒" sourceRef="usertask5" targetRef="startevent1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rollback=='generalmanager'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="部门经理回拒" name="部门经理回拒" sourceRef="usertask3" targetRef="usertask1">
+    <sequenceFlow id="部门经理回拒" name="部门经理回拒" sourceRef="usertask3" targetRef="startevent1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${rollback=='manager'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="总经理审核" name="总经理审核" sourceRef="usertask5" targetRef="endevent1">
@@ -82,28 +70,28 @@
       <bpmndi:BPMNEdge bpmnElement="flow17" id="BPMNEdge_flow17">
         <omgdi:waypoint x="592.0" y="264.0"></omgdi:waypoint>
         <omgdi:waypoint x="592.0" y="404.0"></omgdi:waypoint>
-        <omgdi:waypoint x="162.0" y="404.0"></omgdi:waypoint>
-        <omgdi:waypoint x="162.0" y="264.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="404.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="254.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="72.0" x="170.0" y="388.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="72.0" x="80.0" y="389.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="总经理回拒" id="BPMNEdge_总经理回拒">
         <omgdi:waypoint x="792.0" y="264.0"></omgdi:waypoint>
         <omgdi:waypoint x="792.0" y="436.0"></omgdi:waypoint>
-        <omgdi:waypoint x="162.0" y="436.0"></omgdi:waypoint>
-        <omgdi:waypoint x="162.0" y="264.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="436.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="254.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="60.0" x="170.0" y="418.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="60.0" x="80.0" y="419.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="部门经理回拒" id="BPMNEdge_部门经理回拒">
         <omgdi:waypoint x="472.0" y="264.0"></omgdi:waypoint>
         <omgdi:waypoint x="472.0" y="382.0"></omgdi:waypoint>
-        <omgdi:waypoint x="162.0" y="382.0"></omgdi:waypoint>
-        <omgdi:waypoint x="162.0" y="264.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="382.0"></omgdi:waypoint>
+        <omgdi:waypoint x="67.0" y="254.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="72.0" x="167.0" y="359.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="72.0" x="80.0" y="359.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="总经理审核" id="BPMNEdge_总经理审核">
@@ -146,7 +134,7 @@
         <omgdi:waypoint x="967.0" y="481.0"></omgdi:waypoint>
         <omgdi:waypoint x="967.0" y="302.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="596.0" y="459.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="84.0" x="596.0" y="459.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">

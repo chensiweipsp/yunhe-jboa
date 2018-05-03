@@ -125,6 +125,10 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			}
 
 			for (Task task2 : task) {
+				
+				
+				variables2.put("inputUser",nextDeal);
+				
 				taskService.complete(task2.getId(), variables2);
 
 				List<Task> task3 =findTaskListByName(nextDeal);
@@ -145,6 +149,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				break;
 			}
 		}
+		
+		
 
 
 	}
@@ -242,8 +248,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 	public void saveSubmitTask(WorkflowBean workflowBean) {
 		//获取任务ID
 		String taskId = workflowBean.getTaskId();
-		//获取连线的名称
-		String outcome = workflowBean.getOutcome();
 		//批注信息
 		String message = workflowBean.getComment();
 		//获取报销单ID
@@ -337,9 +341,21 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				}
 			}
 			
+			if(ispass.equals("no"))
+			{
+				variables.put("inputUser", creatEmp);
+				taskService.setAssignee(taskId, creatEmp);
+			}else
+			{
+				variables.put("inputUser", assignee);
+				
+			}
+			
 
 			taskService.complete(taskId, variables);
 
+			
+			
 			if(null!=assignee)
 			{
 				List<Task> task3 =findTaskListByName(assignee);

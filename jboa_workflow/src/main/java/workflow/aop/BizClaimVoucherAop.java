@@ -63,7 +63,6 @@ public class BizClaimVoucherAop {
 		bizClaimVoucher= bizClaimVoucherDao.findByID(String.valueOf(id));
 
 
-		session.setAttribute("Assignee", nextDeal);
 
 		System.err.println(session.getAttribute("createSn"));
 		try {
@@ -154,16 +153,6 @@ public class BizClaimVoucherAop {
 
 		SysEmployee createEmp=	sysEmployeeDao.findUserByUserSn(Integer.parseInt(createSn));
 
-		if(ispass.equals("no"))
-		{
-			session.setAttribute("Assignee", createEmp.getName());
-
-		}else
-		{
-			session.setAttribute("Assignee", nextEmp.getName());
-			
-		}
-		
 
 
 		List<String> roles = new ArrayList<String>();
