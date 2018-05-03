@@ -164,7 +164,9 @@ $(function() {
 								{
 									$.messager.alert('提示',
 									'该报销单已经在审核中');
-								} else {
+								}
+								
+								else {
 									updatePerson();
 								}
 							}
@@ -280,7 +282,11 @@ $(function() {
 									$.messager.alert('提示',
 									'该报销单已经通过了审核');
 								}
-
+								else if(rows[0].status == "审核不通过")
+								{
+									$.messager.alert('提示',
+									'该报销单审核不通过');
+								}
 								else {
 									showStatus();
 								}

@@ -127,6 +127,7 @@ public class BizClaimVoucherController {
 
 		}
 		
+		
 		JsonData jsonData = new JsonData();
 		jsonData.setTotal(bizClaimVoucherBiz.getClaimVouchersCountByTask(claimVoucherids, page, rows));
 		jsonData.setRows(bizClaimVouchers);

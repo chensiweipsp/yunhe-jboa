@@ -129,7 +129,7 @@ public class WorkflowController  {
 	}
 	
 	
-	@RequestMapping(params="method=getlisttaskByShowClaimVoucher")
+	/*@RequestMapping(params="method=getlisttaskByShowClaimVoucher")
 	public  String execute03(HttpServletRequest request ,HttpServletResponse response)  {
 
 
@@ -140,18 +140,14 @@ public class WorkflowController  {
 		for (Task task : list) {
 			taksid.add(task.getId());
 		} 
-		
-
 		List<Integer> strings = workflowService.findLeaveBillByTaskId(list);
-
-		
 		request.setAttribute("claimVoucherids", strings);
 		request.setAttribute("taskids", taksid);
 
 		
 		
 		return "forward:ClaimVoucher.do?method=ClaimVouchershow";
-	}
+	}*/
 
 
 	
