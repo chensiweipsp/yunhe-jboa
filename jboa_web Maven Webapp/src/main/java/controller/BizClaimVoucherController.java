@@ -101,7 +101,6 @@ public class BizClaimVoucherController {
 
 		List<Integer> claimVoucherids = (List<Integer>) request.getAttribute("claimVoucherids");
 		//获取TASKID （为了绑定到数据网格中 在审核报销单的时候使用）
-		List<String> taskids =(List<String>)  request.getAttribute("taskids");
 
 		String previous = request.getParameter("previous");
 		int page=Integer.parseInt( request.getParameter("page"));
@@ -114,7 +113,7 @@ public class BizClaimVoucherController {
 		List<BizClaimVoucher> bizClaimVouchers=	bizClaimVoucherBiz.getClaimVouchersByTask(claimVoucherids, page, rows);
 
       //开始对报销单关联业务流程（给予TASKID）
-		for (BizClaimVoucher bizClaimVoucher : bizClaimVouchers) {
+/*		for (BizClaimVoucher bizClaimVoucher : bizClaimVouchers) {
 
 			for (String taskid : taskids) {
 				ProcessInstance processInstance=workflowService.findProcessInstanceByTaskId(taskid);
@@ -125,7 +124,7 @@ public class BizClaimVoucherController {
 				}
 			}
 
-		}
+		}*/
 		
 		
 		JsonData jsonData = new JsonData();
@@ -155,7 +154,6 @@ public class BizClaimVoucherController {
 			id=Integer.parseInt( request.getParameter("id"));
 			bizClaimVoucher.setId(Long.parseLong(String.valueOf(id)));
 		}
-
 		String createSn=request.getParameter("createSn");
 		String nextDealSn=request.getParameter("nextDealSn");
 		String createTime=request.getParameter("createTime");
@@ -191,18 +189,7 @@ public class BizClaimVoucherController {
 		String comm=request.getParameter("comm");
 		String ispass=request.getParameter("ispass");
 		bizClaimVoucherBiz.ispass( request,ispass, Long.parseLong(id), comm, null==sn?Integer.parseInt(cn):Integer.parseInt(sn),Integer.parseInt(cn));
-
-
-
-
-
 		//启动流程
-
-
-
-
-
-
 		return "ok";
 	}
 

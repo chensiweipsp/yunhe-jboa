@@ -116,6 +116,8 @@ public class WorkflowController  {
 		SysEmployee employee =	(SysEmployee) request.getSession().getAttribute("sysEmploye");
 		String name = employee.getName();
 		List<String> taksid = new ArrayList<String>();
+		
+		
 		List<Task> list = workflowService.findTaskListByName(name); 
 		for (Task task : list) {
 			taksid.add(task.getId());
@@ -124,7 +126,6 @@ public class WorkflowController  {
 		List<Integer> strings = workflowService.findLeaveBillByTaskId(list);
 		
 		request.setAttribute("claimVoucherids", strings);
-		request.setAttribute("taskids", taksid);
 		return "forward:ClaimVoucher.do?method=checkclaimvoucherShowByTask";
 	}
 	
@@ -187,14 +188,18 @@ public class WorkflowController  {
 	public String viewCurrentImage(String taskid,ModelMap modelMap){
 		
 		ProcessDefinition processDefinition=  workflowService.findProcessDefinitionByTaskId(taskid);
+		
 		modelMap.addAttribute("deploymentId", processDefinition.getDeploymentId());
 		modelMap.addAttribute("imageName",processDefinition.getDiagramResourceName());
+		
 		Map<String, Object> map=  workflowService.findCoordingByTask(taskid);
+		
 		modelMap.addAttribute("x",map.get("x"));
 		modelMap.addAttribute("y",map.get("y"));
 		modelMap.addAttribute("width",map.get("width"));
 		modelMap.addAttribute("height",map.get("height"));
 		return "image";
+		
 		
 	}
 
