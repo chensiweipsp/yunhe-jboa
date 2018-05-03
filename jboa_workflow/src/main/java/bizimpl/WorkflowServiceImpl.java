@@ -96,7 +96,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		Map<String, Object> variables2 = new HashMap<String,Object>();
 		BizClaimVoucher bizClaimVoucher= bizClaimVoucherDao.findByID(id);
 
-
 		if(saveorupdate.equals("save"))
 		{
 			//添加
@@ -123,14 +122,10 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			{
 				variables2.put("role", "staff");
 			}
-
+			
 			for (Task task2 : task) {
-				
-				
 				variables2.put("inputUser",nextDeal);
-				
 				taskService.complete(task2.getId(), variables2);
-
 				List<Task> task3 =findTaskListByName(nextDeal);
 				for (Task task4 : task3) {
 					bizClaimVoucher.setTaskid(task4.getId());
@@ -138,7 +133,9 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 				}
 				break;
 			}
+			
 		}
+		
 		else
 		{
 			//修改
@@ -151,8 +148,7 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		}
 		
 		
-
-
+		
 	}
 
 	/**2：使用当前用户名查询正在执行的任务表，获取当前任务的集合List<Task>*/
@@ -298,20 +294,18 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			{
 				variables.put("rollback", "manager");
 				bizClaimVoucher.setStatus("部门经理回拒");
-
 			}
 			else if(auditorRolename.equals("generalmanager"))
 			{
 				variables.put("rollback", "generalmanager");
 				bizClaimVoucher.setStatus("总经理回拒");
-
 			}
 			else if(auditorRolename.equals("cashier"))
 			{
 				variables.put("rollback", "cashier");
 				bizClaimVoucher.setStatus("财务回拒");
 			}
-
+			
 			taskService.complete(taskId, variables);
 			if(null!=creatEmp)
 			{
@@ -323,12 +317,9 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					break;
 				}
 			}
-
 		}
 		else
 		{
-
-
 			List<String> roles=	workflowBean.getCreateEmpRolNames();
 			for (String string : roles) {
 				if(string.equals("generalmanager")) {
@@ -340,7 +331,6 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 					bizClaimVoucher.setStatus("待通过");
 				}
 			}
-			
 			if(ispass.equals("no"))
 			{
 				variables.put("inputUser", creatEmp);
@@ -348,14 +338,8 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 			}else
 			{
 				variables.put("inputUser", assignee);
-				
 			}
-			
-
 			taskService.complete(taskId, variables);
-
-			
-			
 			if(null!=assignee)
 			{
 				List<Task> task3 =findTaskListByName(assignee);
@@ -385,8 +369,13 @@ public class WorkflowServiceImpl implements biz.IWorkflowService {
 		//流程结束了
 		if(pi==null){
 			//更新请假单表的状态从1变成2（审核中-->审核完成）
+			if(ispass.equals("no"))
+			{
+			}
+			else
+			{
 			bizClaimVoucher.setStatus("已通过审核");
-			bizClaimVoucher.setSchedule(4);
+			}
 			bizClaimVoucherDao.SaveOrUpdateClaimVouchers2(bizClaimVoucher,taskId);
 		}
 

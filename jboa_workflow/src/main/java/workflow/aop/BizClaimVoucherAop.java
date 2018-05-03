@@ -62,9 +62,6 @@ public class BizClaimVoucherAop {
 
 		bizClaimVoucher= bizClaimVoucherDao.findByID(String.valueOf(id));
 
-
-
-		System.err.println(session.getAttribute("createSn"));
 		try {
 			IWorkflowService.saveStartProcess(saveorupdate,createEmp, nextDeal,key, id,bizClaimVoucher.getTaskid());
 		} catch (Exception e) {
