@@ -227,6 +227,7 @@ public class BizClaimVoucherController {
 		String size = request.getParameter("size");
 		List<BizClaimVoucher> bizClaimVouchers=new ArrayList<BizClaimVoucher>();
 		for (int i = 0; i < Integer.parseInt(size); i++) {
+			
 			String bObject = request.getParameter(String.valueOf(i));
 			String[] args= bObject.split(","); 
 			BizClaimVoucher bizClaimVoucher=new BizClaimVoucher();
