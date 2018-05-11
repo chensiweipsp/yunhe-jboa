@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.inject.New;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
@@ -51,11 +50,9 @@ public class BizClaimVoucherDaoImpl extends HibernateDaoSupport implements BizCl
 				//部门经理查看
 				else 
 				{
-
 					bizClaimVouchers= getHibernateTemplate().getSessionFactory().getCurrentSession().
 							createQuery("from BizClaimVoucher   ").setFirstResult((page-1)*rows).setMaxResults(rows).list();
 				}
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

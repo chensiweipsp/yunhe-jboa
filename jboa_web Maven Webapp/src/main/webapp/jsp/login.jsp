@@ -105,7 +105,6 @@ input.login-sub {
 					<td colspan="2"><input type="submit" class="login-sub"
 						value="" /></td>
 				</tr>
-
 			</table>
 		</form>
 	</div>

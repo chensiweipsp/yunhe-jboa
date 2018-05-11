@@ -275,7 +275,28 @@ $(function() {
 								{
 									$.messager.alert('提示',
 									'该报销单已经通过了审核');
-								}else {
+								}
+								else if(rows[0].status == "审核不通过")
+								{
+									$.messager.alert('提示',
+									'该报销单审核不通过');
+								}
+								else if(rows[0].status == "总经理回拒")
+								{
+									$.messager.alert('提示',
+									'该报销单审核不通过');
+								}
+								else if(rows[0].status == "部门经理回拒")
+								{
+									$.messager.alert('提示',
+									'该报销单审核不通过');
+								}
+								else if(rows[0].status == "财务回拒")
+								{
+									$.messager.alert('提示',
+									'该报销单审核不通过');
+								}
+								else {
 									showStatus();
 								}
 							}

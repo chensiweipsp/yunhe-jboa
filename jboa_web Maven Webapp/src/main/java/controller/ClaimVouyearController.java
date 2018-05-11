@@ -17,7 +17,6 @@ import util.JsonData;
 @Controller
 @RequestMapping("ClaimVouyear.do")
 public class ClaimVouyearController {
-
 	@Autowired
 	ClaimVouyearBIZ ClaimVouyearBIZ;
 	
