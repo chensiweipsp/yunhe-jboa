@@ -14,18 +14,18 @@
 	<context:component-scan base-package="daoimpl,bizimpl,realm" />
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="driverClassName" value="oracle.jdbc.OracleDriver">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
 		</property>
-		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl">
+		<property name="url" value="jdbc:mysql://192.168.110.131:3306/jboa?useUnicode=true&amp;characterEncoding=UTF-8">
 		</property>
-		<property name="username" value="scott"></property>
-		<property name="password" value="tiger"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123456"></property>
 	</bean>
 
 
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-		<property name="configLocation" value="classpath:hibernate.cfg.xml">
+		<property name="configLocation" value="classpath:hibernate_mysql.cfg.xml">
 		</property>
 	</bean>
 
