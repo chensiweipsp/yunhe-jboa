@@ -187,7 +187,7 @@ public class BizClaimVoucherBizImpl implements BizClaimVoucherBiz {
 		}
 		
 		return bizClaimVoucherDao.getClaimVouchers(page, rows, stringBuilder.toString(), isLookThrough);
-		
+			
 	}
 	
 	public List<BizClaimVoucher> getClaimVouchersByTask(List<Integer> bizclaimvoucherids, int page, int rows) {
